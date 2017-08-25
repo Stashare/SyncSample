@@ -1,0 +1,94 @@
+<LinearLayout android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="25dp"
+                android:maxWidth = "200dp"
+                android:text=" (#) Females"
+                android:id="@+id/female" />
+
+            <EditText
+                android:layout_weight="1"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:maxWidth="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="0"
+                android:id="@+id/female_count" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="25dp"
+                android:maxWidth = "200dp"
+                android:text=" (#) Males"
+                android:id="@+id/male" />
+
+            <EditText
+                android:layout_weight="1"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:maxWidth="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="0"
+                android:id="@+id/male_count" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginBottom="25dp"
+                android:maxWidth = "200dp"
+                android:text="(#) Female children aged under 18 years"
+                android:id="@+id/textView2" />
+
+            <EditText
+                android:layout_weight="1"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:maxWidth="100dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:hint="0"
+                android:id="@+id/femun18" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>

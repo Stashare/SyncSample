@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="7dp"
+        android:textAlignment="textStart"
+        android:gravity="start"
+        android:textSize="15sp"
+        android:id="@+id/header_text"
+        android:textColor="@android:color/background_dark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=" (#) Household members:"
+        android:layout_marginLeft="10dp" />
+
+    <EditText
+        android:layout_below="@id/header_text"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:id="@+id/answ"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:layout_width="80dp"
+        android:hint = "0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp" />
+
+
+</RelativeLayout>

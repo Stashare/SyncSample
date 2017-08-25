@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/dark_gray"
+    android:layout_height="match_parent"
+    tools:context="ke.co.stashare.syncsample.ui.MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+    <EditText
+        android:layout_below="@id/toolbar"
+        android:id="@+id/editQsn"
+        android:layout_width="match_parent"
+        android:layout_marginEnd="5dp"
+        android:textAlignment="center"
+        android:layout_marginTop="5dp"
+        android:layout_height="40dp"
+        android:background="@drawable/rounded_corner1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="Enter a question"
+        android:layout_marginStart="5dp" />
+
+    <Spinner
+        android:id="@+id/spinnerSections"
+        android:layout_marginTop="10dp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editQsn"
+        android:entries="@array/survey_sections">
+
+    </Spinner>
+
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:text="save"
+        android:textColor="@android:color/background_dark"
+        android:theme="@style/Button"
+        android:layout_below="@+id/spinnerSections"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="39dp" />
+
+    <Button
+        android:id="@+id/startSurvey"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:theme="@style/Button"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="23dp"
+        android:text="Start Survey" />
+
+
+</RelativeLayout>

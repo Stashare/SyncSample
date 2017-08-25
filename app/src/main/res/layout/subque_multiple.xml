@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:fadeScrollbars="false"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_height="wrap_content">
+
+
+        <TableLayout
+            android:id="@+id/tabular_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text=" (#) Females"
+                    android:id="@+id/female" />
+
+                <EditText
+                    android:textStyle="bold"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:maxWidth="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/female_count" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text=" (#) Males"
+                    android:id="@+id/male" />
+
+                <EditText
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:maxWidth="100dp"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/male_count" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text="(#) Female children aged under 18 years"
+                    android:id="@+id/fenun18" />
+
+                <EditText
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:maxWidth="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/femun18_count" />
+            </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text="(#) Male children aged  under 18 years"
+                    android:id="@+id/maleun18" />
+
+                <EditText
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:maxWidth="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/maleun18_count" />
+            </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text="(#) Youth aged between 18 and 24 years"
+                    android:id="@+id/yutun24" />
+
+                <EditText
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:maxWidth="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/yutun24_count" />
+            </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text="(#) Adults aged between 25-60 years"
+                    android:id="@+id/adultun60" />
+
+                <EditText
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:maxWidth="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/adultun60_count" />
+            </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:textColor="@android:color/background_dark"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="25dp"
+                    android:maxWidth = "200dp"
+                    android:text="(#) Elders aged over 60 years"
+                    android:id="@+id/elder" />
+
+                <EditText
+                    android:textColor="@color/colorPrimaryDark"
+                    android:layout_weight="1"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:maxWidth="100dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:hint="0"
+                    android:id="@+id/elder_count" />
+            </TableRow>
+
+        </TableLayout>
+
+    </RelativeLayout>
+</ScrollView>
+

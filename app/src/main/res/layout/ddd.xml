@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:gravity="center"
+    tools:context=".ui.TestUi"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:id="@+id/number_calc"
+        android:background="@drawable/rect"
+        android:layout_height="wrap_content">
+
+
+    <RelativeLayout
+        android:clickable="true"
+        android:background="@drawable/rect3"
+        android:onClick="buttonRemove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/remove">
+        <ImageView
+            android:id="@+id/remove_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_remove_black_100dp" />
+
+    </RelativeLayout>
+
+
+        <android.support.v7.widget.AppCompatEditText
+            android:layout_width="30dp"
+            android:maxLength="2"
+            android:inputType="number"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textColor="@android:color/background_dark"
+            android:layout_marginTop="1dp"
+            android:layout_toEndOf="@id/remove"
+            android:background="@drawable/rounded_corner1"
+            android:id="@+id/number"
+            android:text="0"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/remove"
+            android:layout_marginLeft="5dp" />
+
+
+
+    <RelativeLayout
+        android:onClick="ButtonAdd"
+        android:clickable="true"
+        android:layout_toEndOf="@id/number"
+        android:background="@drawable/rect2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/add"
+        android:layout_toRightOf="@id/number">
+        <ImageView
+            android:id="@+id/add_btn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_add_black_100dp" />
+
+    </RelativeLayout>
+
+        </RelativeLayout>
+</RelativeLayout>

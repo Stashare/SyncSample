@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.IngineTest">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:elevation="8dp"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+
+            <TextView
+                android:id="@+id/toolbar_text"
+                android:textColor="@android:color/background_light"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center"
+                android:layout_marginEnd="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:layout_gravity="center_vertical|start"
+                android:text="Fill in the Required Details Below:"/>
+
+        </android.support.v7.widget.Toolbar>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/scroll"
+        android:layout_marginBottom="0dp"
+        android:background="@color/light_grey"
+        android:fadeScrollbars="true"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:elevation="50dp">
+
+        <!--android:background="#00bcd4"-->
+        <LinearLayout
+            android:layout_marginBottom="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/cardview_light_background"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/country"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="1. Country" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:id="@+id/editTextCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="22dp"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_corner1"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:hint="Enter Country Name"
+                android:maxLines="1"
+                android:textColor="#000"
+                android:textSize="17sp"
+                android:textStyle="bold|italic">
+
+                <requestFocus />
+            </EditText>
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/province"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="2. Province / Region" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextprovince"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Province / Region  Name"
+                android:layout_marginLeft="22dp" />
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/county"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="3. District/County" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextcounty"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter District/County  Name"
+                android:layout_marginLeft="22dp" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/division"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="4. Division/Sector" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextdivision"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Division/Sector Name"
+                android:layout_marginLeft="22dp" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/ward"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="5. Ward" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextward"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Ward Name"
+                android:layout_marginLeft="22dp" />
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/village"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="6. Village / Cell" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextVillage"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Village / Cell Name"
+                android:layout_marginLeft="22dp" />
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/group_name"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="7. Group Name(optional):" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextGroup"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Group Name"
+                android:layout_marginLeft="22dp" />
+
+            <TextView
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="10dp"
+                android:id="@+id/note_carefully"
+                android:layout_width="match_parent"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="NB: if no group skip to No 8"
+                android:layout_marginLeft="5dp" />
+
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/interviewer"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="8. Name of Interviewer:" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextInterviewer"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Name (Full)"
+                android:layout_marginLeft="22dp" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/gps"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="9. GPS Latititude of Home" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextDir"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Direction (North/South) "
+                android:layout_marginLeft="22dp" />
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextDegrees"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Degrees "
+                android:layout_marginLeft="22dp" />
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMinutes"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Minutes "
+                android:layout_marginLeft="22dp" />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:id="@+id/gps_longitude"
+                android:layout_width="match_parent"
+                android:textColor="@color/colorPrimaryDark"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="10. GPS Longitude of Home" />
+
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextLongDir"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Direction (East/West)"
+                android:layout_marginLeft="22dp" />
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextLong_Degrees"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Degrees "
+                android:layout_marginLeft="22dp" />
+            <EditText
+                android:textColorHint="@color/gray"
+                android:fontFamily="sans-serif-condensed"
+                android:typeface="sans"
+                android:layout_marginStart="22dp"
+                android:textSize="17sp"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextLongMinutes"
+                android:layout_marginTop="10dp"
+                android:textStyle="bold|italic"
+                android:background="@drawable/rounded_corner1"
+                android:textColor="#000"
+                android:hint="Enter Minutes "
+                android:layout_marginLeft="22dp" />
+
+        </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        </ScrollView>
+
+    <Button
+        app:layout_anchor="@+id/scroll"
+        app:layout_anchorGravity="bottom|center"
+        android:id="@+id/proceed"
+        android:onClick="sayHi"
+        android:theme="@style/Button2"
+        android:text="Proceed to Questions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    </android.support.design.widget.CoordinatorLayout>

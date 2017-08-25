@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="?android:attr/selectableItemBackground"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/list_avatar"
+        android:layout_width="60dp"
+        android:layout_marginTop="10dp"
+        android:backgroundTint="@android:color/background_dark"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_general_qstn100" />
+
+
+    <TextView
+        android:layout_marginTop="25dp"
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:textStyle="bold"
+        android:layout_height="wrap_content"
+        android:textColor="@color/twitter"
+        android:layout_marginStart="@dimen/md_keylines"
+        android:layout_toEndOf="@+id/list_avatar"
+        android:text="GENERAL HOUSEHOLD INCOME, EXPENDITURES &amp; LIVELIHOODS SUPPORT"
+        android:textAppearance="?attr/textAppearanceListItem"
+        android:textSize="15sp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="@dimen/md_keylines"
+        android:layout_toRightOf="@+id/list_avatar" />
+
+    <ImageView
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="38dp"
+        android:id="@+id/arrow_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_black36"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="25dp" />
+
+</RelativeLayout>

@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">Islamic Relief</string>
+    <string-array name="survey_sections">
+        <item>General Section</item>
+        <item>Personal Information</item>
+        <item>Education Section</item>
+        <item>Employment Section</item>
+    </string-array>
+    <string name="collapsed">collapsed: %s</string>
+    <string name="expanded">expanded: %s</string>
+    <string name="sex">A.1  Sex of respondent (Select one) :</string>
+    <string name="red">RED</string>
+    <string name="blue">BLUE</string>
+    <string name="orange">ORANGE</string>
+
+    <string name="id_unique">_id</string>
+    <string name="country">Country</string>
+    <string name="latitude">GPS Latititude of Home</string>
+    <string name="longitude">GPS Longitude of Home</string>
+
+    <string name="que_id">id</string>
+    <string name="que">que</string>
+    <string name="que_type">que_type</string>
+
+        <string-array name="general_intro_info">
+            <item>Country</item>
+            <item>Province/Region</item>
+            <item>District/County</item>
+            <item>Division/Sector</item>
+            <item>Ward</item>
+            <item>Village/Cell</item>
+            <item>Group Name</item>
+            <item>Name of Interviewer</item>
+            <item>Assessment Date</item>
+            <item>Time of Assessment (Start)</item>
+            <item>Time of Assessment (Finish)</item>
+            <item>Time of Assessment (Total)</item>
+            <item>GPS Latititude of Home</item>
+            <item>GPS Longitude of Home</item>
+    </string-array>
+</resources>

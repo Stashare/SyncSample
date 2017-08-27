@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class SampleCheckAdapter extends RecyclerView.Adapter<SampleCheckAdapter.
     private List<String> selected = new ArrayList<>();
     private List<Answers> ans;
     Context context;
+    private List<Answers> temp_ans;
     private List<String>ansWithComma;
     private String question_no;
 
@@ -66,102 +68,50 @@ public class SampleCheckAdapter extends RecyclerView.Adapter<SampleCheckAdapter.
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 numbers.get(holder.getAdapterPosition()).setSelected(isChecked);
                 CheckModel s = numbers.get(holder.getAdapterPosition());
-
-
-                ansWithComma = new ArrayList<>();
+                temp_ans = new ArrayList<>();
                 ans= new ArrayList<>();
-/*
+                ansWithComma = new ArrayList<>();
 
-
-
-                if(ansWithComma.size()>0){
-
-                    for(int i=0; i<ansWithComma.size();i++){
-                        if(!Objects.equals(ansWithComma.get(i), selected)){
-                            ansWithComma.add(selected);
-
-                        }
-                    }
-
-                }
-                else{
-                    ansWithComma.add(selected);
-                }
-                String majibu= android.text.TextUtils.join(",", ansWithComma);
-
-                Answers ansi = new Answers(question_no,majibu);
-                ans.add(ansi);
-                for (Answers aswe : ans) {
-
-                    String jibu = aswe.getAns();
-
-                    Log.d("Que_No", String.valueOf(aswe.getQue()));
-                    Log.d("Answers", String.valueOf(jibu));
-
-                }
-
-            }*/
                 if(s.isSelected()){
                     selected.add(s.getSelection());
                     String majibu= android.text.TextUtils.join(",", selected);
 
                     Answers ansi = new Answers(question_no,majibu);
-                    DbList get_saved_AnswersList = AppController.get_DbList_From_Shared_Prefs(context);
+                    ans.clear();
+                    ans.add(ansi);
 
-                    ans = get_saved_AnswersList.getResults();
+                    DbList dbL = get_DbList_From_Shared_Prefs(context);
 
-                    if(ans.size()>0){
-                        for (final Answers answers : ans) {
+                    temp_ans.clear();
 
-                            final String jib = answers.getQue();
+                    temp_ans = dbL.getResults();
 
-                            if(!Objects.equals(jib, question_no)){
-                                ans.add(ansi);
-                                DbList dbList = new DbList(ans);
+                    if(temp_ans.size()== 0){
 
-                                AppController.save_DbList_To_Shared_Prefs(context, dbList);
-                            }
-                            else{
+                        DbList dbList = new DbList(ans);
 
-                                if(answers.getQue().equals(question_no)){
-
-                                    ans.remove(answers);
-                                    break;
-
-                                }
-                                ans.add(ansi);
-
-                                DbList dbList = new DbList(ans);
-
-                                AppController.save_DbList_To_Shared_Prefs(context, dbList);
-
-                            }
-
-                            //check if the key value of individual is equals to que_no
-                        }
-
+                        save_DbList_To_Shared_Prefs(context, dbList);
                     }
                     else {
 
-                        ans.add(ansi);
-                        DbList dbList = new DbList(ans);
+                        for (Iterator<Answers> iterator = temp_ans.iterator(); iterator.hasNext(); ) {
+                            Answers value = iterator.next();
+                            if (Objects.equals(value.getQue(), question_no)) {
+                                iterator.remove();
+                            }
+                        }
 
-                        AppController.save_DbList_To_Shared_Prefs(context, dbList);
+                        temp_ans.add(ansi);
+
+                        Log.d("temp_ans", String.valueOf(temp_ans.size()));
+
+                        DbList dbList = new DbList(temp_ans);
+
+                        save_DbList_To_Shared_Prefs(context, dbList);
 
                     }
 
-                    for (Answers aswe : ans) {
-
-                        String jibu = aswe.getAns();
-
-                        Log.d("Que_No", String.valueOf(aswe.getQue()));
-                        Log.d("Answers", String.valueOf(jibu));
-
-                    }
-
-
-
-                }
+            }
                 else {
                     selected.remove(s.getSelection());
 
@@ -169,50 +119,39 @@ public class SampleCheckAdapter extends RecyclerView.Adapter<SampleCheckAdapter.
 
                     Answers ansi = new Answers(question_no, majibu);
 
+                    ans.clear();
+                    ans.add(ansi);
 
-                    DbList get_saved_AnswersList = AppController.get_DbList_From_Shared_Prefs(context);
+                    DbList dbL = get_DbList_From_Shared_Prefs(context);
 
-                    ans = get_saved_AnswersList.getResults();
+                    temp_ans.clear();
 
-                    if (ans.size() > 0) {
-                        for (final Answers answers : ans) {
+                    temp_ans = dbL.getResults();
 
-                            final String jib = answers.getQue();
+                    if(temp_ans.size()== 0){
 
-                            if (!Objects.equals(jib, question_no)) {
-                                ans.add(ansi);
-                                DbList dbList = new DbList(ans);
-
-                                AppController.save_DbList_To_Shared_Prefs(context, dbList);
-                            } else {
-
-                                if (answers.getQue().equals(question_no)) {
-
-                                    ans.remove(answers);
-                                    break;
-
-                                }
-                                ans.add(ansi);
-
-                                DbList dbList = new DbList(ans);
-
-                                AppController.save_DbList_To_Shared_Prefs(context, dbList);
-
-                            }
-
-                            //check if the key value of individual is equals to que_no
-                        }
-
-                    } else {
-
-                        ans.add(ansi);
                         DbList dbList = new DbList(ans);
 
-                        AppController.save_DbList_To_Shared_Prefs(context, dbList);
+                        save_DbList_To_Shared_Prefs(context, dbList);
+                    }
+                    else {
+
+                        for (Iterator<Answers> iterator = temp_ans.iterator(); iterator.hasNext(); ) {
+                            Answers value = iterator.next();
+                            if (Objects.equals(value.getQue(), question_no)) {
+                                iterator.remove();
+                            }
+                        }
+
+                        temp_ans.add(ansi);
+
+                        Log.d("temp_ans", String.valueOf(temp_ans.size()));
+
+                        DbList dbList = new DbList(temp_ans);
+
+                        save_DbList_To_Shared_Prefs(context, dbList);
 
                     }
-
-                    Log.d("Ans_Size", String.valueOf(ans.size()));
 
 
 
@@ -221,16 +160,38 @@ public class SampleCheckAdapter extends RecyclerView.Adapter<SampleCheckAdapter.
                 }
         });
     }
-    /*public static void save_Selection(Context context, User _USER) {
+
+    public void save_DbList_To_Shared_Prefs(Context context,DbList dbList) {
         SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
         Gson gson = new Gson();
-        String json = gson.toJson(_USER);
-        prefsEditor.putString("user", json);
+        String json = gson.toJson(dbList);
+        prefsEditor.putString("dblist", json);
         prefsEditor.apply();
 
-    }*/
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public  DbList get_DbList_From_Shared_Prefs(Context context) {
+
+        List<Answers> results = new ArrayList<>();
+
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+        Gson gson = new Gson();
+        String json = appSharedPrefs.getString("dblist", "");
+
+        DbList dbList= new DbList(results);
+
+        if(!Objects.equals(json, "")){
+
+            dbList = gson.fromJson(json, DbList.class);
+        }
+
+        return dbList;
+    }
 
     @Override
     public int getItemCount() {

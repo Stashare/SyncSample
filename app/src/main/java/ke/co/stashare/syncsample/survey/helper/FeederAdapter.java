@@ -2,8 +2,10 @@ package ke.co.stashare.syncsample.survey.helper;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
@@ -25,9 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,6 +62,7 @@ public class FeederAdapter extends RecyclerView.Adapter{
     private int lastCheckedPosition = -1;
     private String question_no;
     private List<Answers> ans;
+    private List<Answers> temp_ans;
     private String[] mDataset;
     private List<String>ansWithComma;
 
@@ -65,7 +70,7 @@ public class FeederAdapter extends RecyclerView.Adapter{
         this.context = context;
         this.mFeedList = feedList;
         this.question_no=question_no;
-        ans= new ArrayList<>();
+        //ans = new ArrayList<>();
     }
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -118,6 +123,12 @@ public class FeederAdapter extends RecyclerView.Adapter{
                 @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onClick(View v) {
+                    ansWithComma = new ArrayList<>();
+
+                    ans= new ArrayList<>();
+
+                    temp_ans = new ArrayList<Answers>();
+
                     int copyOfLastCheckedPosition = lastCheckedPosition;
                     lastCheckedPosition = getAdapterPosition();
                     notifyItemChanged(copyOfLastCheckedPosition);
@@ -126,10 +137,9 @@ public class FeederAdapter extends RecyclerView.Adapter{
 
                     String selected= mFeedList.get(lastCheckedPosition);
 
-                    ansWithComma = new ArrayList<>();
-                    //ans= new ArrayList<>();
+                    ansWithComma.add(selected);
 
-                    if(ansWithComma.size()>0){
+                    if(ansWithComma.size()> 0){
 
                       for(int i=0; i<ansWithComma.size();i++){
                           if(!Objects.equals(ansWithComma.get(i), selected)){
@@ -139,64 +149,82 @@ public class FeederAdapter extends RecyclerView.Adapter{
                       }
 
                     }
-                    else{
-                        ansWithComma.add(selected);
-                    }
                     String majibu= android.text.TextUtils.join(",", ansWithComma);
+
 
                     Answers ansi = new Answers(question_no,majibu);
 
-                    DbList get_saved_AnswersList = AppController.get_DbList_From_Shared_Prefs(context);
+                    ans.clear();
+                    ans.add(ansi);
 
-                    ans = get_saved_AnswersList.getResults();
+                    DbList dbL = get_DbList_From_Shared_Prefs(context);
 
-                    if(ans.size()>0){
-                        for (final Answers answers : ans) {
+                    temp_ans.clear();
 
-                            final String jib = answers.getQue();
+                    temp_ans = dbL.getResults();
 
-                            if(!Objects.equals(jib, question_no)){
-                                ans.add(ansi);
-                                DbList dbList = new DbList(ans);
+                    if(temp_ans.size()== 0){
 
-                                AppController.save_DbList_To_Shared_Prefs(context, dbList);
-                            }
-                            else{
+                        DbList dbList = new DbList(ans);
 
-                                if(answers.getQue().equals(question_no)){
-
-                                    ans.remove(answers);
-                                    break;
-
-                            }
-                                ans.add(ansi);
-
-                                DbList dbList = new DbList(ans);
-
-                                AppController.save_DbList_To_Shared_Prefs(context, dbList);
-
-                            }
-
-                            //check if the key value of individual is equals to que_no
-                    }
-
+                        save_DbList_To_Shared_Prefs(context, dbList);
                     }
                     else {
 
-                        ans.add(ansi);
-                        DbList dbList = new DbList(ans);
+                        for (Iterator<Answers> iterator = temp_ans.iterator(); iterator.hasNext(); ) {
+                            Answers value = iterator.next();
+                            if (Objects.equals(value.getQue(), question_no)) {
+                                iterator.remove();
+                            }
+                        }
 
-                        AppController.save_DbList_To_Shared_Prefs(context, dbList);
+                        temp_ans.add(ansi);
+
+                        Log.d("temp_ans", String.valueOf(temp_ans.size()));
+
+                        DbList dbList = new DbList(temp_ans);
+
+                        save_DbList_To_Shared_Prefs(context, dbList);
 
                     }
 
-                    Log.d("Ans_Size", String.valueOf(ans.size()));
+
                 }
             });
         }
     }
 
+    public void save_DbList_To_Shared_Prefs(Context context,DbList dbList) {
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(dbList);
+        prefsEditor.putString("dblist", json);
+        prefsEditor.apply();
 
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public  DbList get_DbList_From_Shared_Prefs(Context context) {
+
+        List<Answers> results = new ArrayList<>();
+
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+        Gson gson = new Gson();
+        String json = appSharedPrefs.getString("dblist", "");
+
+        DbList dbList= new DbList(results);
+
+        if(!Objects.equals(json, "")){
+
+            dbList = gson.fromJson(json, DbList.class);
+        }
+
+        return dbList;
+    }
 
 
 

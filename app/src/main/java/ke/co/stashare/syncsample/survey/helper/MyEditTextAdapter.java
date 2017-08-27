@@ -1,5 +1,10 @@
 package ke.co.stashare.syncsample.survey.helper;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,9 +15,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import ke.co.stashare.syncsample.R;
 
@@ -28,12 +38,16 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
     private List<Answers> ans;
     private List<String>ansWithComma;
     private List<String> mFeedList;
+    private List<Answers> temp_ans;
+    Context context;
 
-    public MyEditTextAdapter(String question_no,/*, List<String> feedList,*/String[] headerTexts,String[] myDataset) {
+    public MyEditTextAdapter(Context context,String question_no,/*, List<String> feedList,*/String[] headerTexts,String[] myDataset) {
         //this.mFeedList = feedList;
+        this.context= context;
         mDataset = myDataset;
         this.headerTexts = headerTexts;
         this.question_no = question_no;
+
     }
 
     @Override
@@ -92,33 +106,63 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
             // no op
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
             mDataset[position] = charSequence.toString();
 
             ansWithComma = new ArrayList<>();
             ans= new ArrayList<>();
+            temp_ans = new ArrayList<Answers>();
             //android.text.TextUtils.join(",", mDataset[position]);
             //Log.d("DATS", Arrays.toString(mDataset));
 
-            for (String sel : mDataset) {
+            Collections.addAll(ansWithComma, mDataset);
 
-                ansWithComma.add(sel);
-
-                //temp_result.add(i, results.get(i));
-
-            }
+            Collections.replaceAll(ansWithComma, null, "none");
+            Collections.replaceAll(ansWithComma, "", "none");
 
             String majibu= android.text.TextUtils.join(",", ansWithComma);
 
+            Log.d("mDAT", majibu);
             Answers ansi = new Answers(question_no,majibu);
-            ans.add(ansi);
-            for (Answers aswe : ans) {
 
-                Log.d("Que_No", String.valueOf(aswe.getQue()));
-                Log.d("Answers", String.valueOf(aswe.getAns()));
+            ans.add(ansi);
+
+
+            DbList dbL = get_DbList_From_Shared_Prefs(context);
+
+            temp_ans.clear();
+
+            temp_ans = dbL.getResults();
+
+            if(temp_ans.size()== 0){
+
+                DbList dbList = new DbList(ans);
+
+                save_DbList_To_Shared_Prefs(context, dbList);
+            }
+            else {
+
+                for (Iterator<Answers> iterator = temp_ans.iterator(); iterator.hasNext(); ) {
+                    Answers value = iterator.next();
+                    if (Objects.equals(value.getQue(), question_no)) {
+                        iterator.remove();
+                    }
+                }
+
+                temp_ans.add(ansi);
+
+                Log.d("temp_ans", String.valueOf(temp_ans.size()));
+
+
+                DbList dbList = new DbList(temp_ans);
+
+                save_DbList_To_Shared_Prefs(context, dbList);
 
             }
+
+
 
             ansWithComma.clear();
 
@@ -129,5 +173,40 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
             // no op
         }
     }
+
+
+    public void save_DbList_To_Shared_Prefs(Context context,DbList dbList) {
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(dbList);
+        prefsEditor.putString("dblist", json);
+        prefsEditor.apply();
+
+    }
+
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public  DbList get_DbList_From_Shared_Prefs(Context context) {
+
+        List<Answers> results = new ArrayList<>();
+
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+        Gson gson = new Gson();
+        String json = appSharedPrefs.getString("dblist", "");
+
+        DbList dbList= new DbList(results);
+
+        if(!Objects.equals(json, "")){
+
+            dbList = gson.fromJson(json, DbList.class);
+        }
+
+        return dbList;
+    }
+
+
 }
 

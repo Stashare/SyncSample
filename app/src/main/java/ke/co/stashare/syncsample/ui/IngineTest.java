@@ -135,7 +135,7 @@ public class IngineTest  extends AppCompatActivity implements View.OnClickListen
 
         }
 
-            myEditTextAdapter = new MyEditTextAdapter("A.1",headers,mDataSet);
+            myEditTextAdapter = new MyEditTextAdapter(IngineTest.this,"A.1",headers,mDataSet);
 
         //multipleTextAdapter = new MultipleTextAdapter("A.1",headers,mDataSet);
 

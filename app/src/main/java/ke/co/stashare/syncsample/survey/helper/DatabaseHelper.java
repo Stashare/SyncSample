@@ -9,11 +9,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -31,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "_id";
     public static final String ID = "id";
     public static final String QUE = "que";
+    public static final String USERID = "user_id";
     public static final String SUB_QUE = "sub_que";
 /*
 
@@ -209,6 +213,169 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(sql, null);
         return c;
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+
+    public Cursor createUsersTable(String tbl, String[] que_no, String[] ans){
+        SQLiteDatabase db;
+        db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+
+        Cursor tblExists = checkTableExists(tbl);
+        String que;
+        temp = new ArrayList<>();
+
+        if (tblExists.getCount() > 0) {
+
+            Log.d("TABLE_EXISTS", String.valueOf("YES"));
+            //check whether que colomns exists else alter with the table and add the columns
+            //if columns exists,update the info
+
+          /* String DATABASE_ALTER_TEAM_TO_V2 = "ALTER TABLE "
+                    + tbl + " ADD COLUMN " + COLUMN_COACH + " TEXT;";
+*/
+
+            for (String aQue_no : que_no) {
+                //check whether que is part of the columns
+
+                boolean bla = existsColumnInTable(db,tbl,aQue_no);
+                if(!bla){
+
+                    String alterDb = "ALTER TABLE "
+                            + tbl + " ADD COLUMN " + aQue_no + " VARCHAR;";
+
+                    db.execSQL(alterDb);
+                }
+            }
+            //select an id, if it doesnt exist insert new row else update the existing row
+
+            String user_id = ans[0];
+
+            Log.d("USER_ID", user_id);
+
+            Cursor rowExists = checkUserID(user_id,tbl);
+
+            if (rowExists.getCount() > 0) {
+
+                for (int i = 0; i < que_no.length; i++) {
+
+
+                    if (Objects.equals(ans[i], "")){
+
+                        ans[i]="none";
+                    }
+
+                    String outp= que_no[i]+", "+ans[i];
+
+                    //Log.d("ROW, VALUE", String.valueOf(outp));
+                    cv.put(que_no[i], ans[i]);
+
+                }
+
+                db.update(tbl,cv,"user_id ="+user_id, null);
+                db.close();
+
+            }
+            else {
+
+                for (int i = 0; i < que_no.length; i++) {
+
+
+                    if (Objects.equals(ans[i], "")){
+
+                        ans[i]="none";
+                    }
+
+                    String outp= que_no[i]+", "+ans[i];
+
+                    Log.d("ROW, VALUE", String.valueOf(outp));
+                    cv.put(que_no[i], ans[i]);
+
+                }
+                db.insert(tbl, null, cv);
+                db.close();
+
+            }
+
+
+        }
+        else{
+            for (String aQue_no : que_no) {
+
+
+                que = aQue_no;
+                que += " VARCHAR";
+
+                temp.add(que);
+            }
+
+            String listComma = android.text.TextUtils.join(",", temp);
+
+
+            querryString = "CREATE TABLE IF NOT EXISTS " + tbl + "(" + COLUMN_ID +
+                    " INTEGER PRIMARY KEY AUTOINCREMENT, " + listComma + ");";
+
+            db.execSQL(querryString);
+
+
+            for (int i = 0; i < que_no.length; i++) {
+
+
+                if (Objects.equals(ans[i], "")){
+
+                    ans[i]="none";
+                }
+
+                String outp= que_no[i]+", "+ans[i];
+
+                Log.d("ROW, VALUE", String.valueOf(outp));
+                cv.put(que_no[i], ans[i]);
+
+            }
+            db.insert(tbl, null, cv);
+            db.close();
+
+
+
+        }
+
+        db = this.getReadableDatabase();
+        String sql = "SELECT * FROM " + tbl +";";
+        Cursor c = db.rawQuery(sql, null);
+        return c;
+
+    }
+
+    private boolean existsColumnInTable(SQLiteDatabase inDatabase, String inTable, String columnToCheck) {
+        Cursor mCursor = null;
+        try {
+            // Query 1 row
+            mCursor = inDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null);
+
+            // getColumnIndex() gives us the index (0 to ...) of the column - otherwise we get a -1
+            if (mCursor.getColumnIndex(columnToCheck) != -1)
+                return true;
+            else
+                return false;
+
+        } catch (Exception Exp) {
+            // Something went wrong. Missing the database? The table?
+            Log.d("error occurred: ", Exp.getMessage());
+            return false;
+        } finally {
+            if (mCursor != null) mCursor.close();
+        }
+    }
+    public Cursor getColumns(String tbl){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql = "SELECT * FROM " + tbl + " LIMIT 1 ;";
+        Cursor c = db.rawQuery(sql, null);
+        return c;
+
+    }
+
     public void CreateTableRow(String tbl_name, List<String> columns, List<String> answers) {
 
         String que;
@@ -288,7 +455,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
+    private Cursor checkUserID(String user_id,String tbl) {
+        SQLiteDatabase db;
 
+        db = this.getReadableDatabase();
+
+
+        Cursor cursor = db.rawQuery("select "+ USERID + " from "+ tbl + " where  "+ USERID + " = '"
+                + user_id + "'", null);
+
+        return cursor;
+
+    }
 
     private Cursor checkTableExists(String table_name) {
         SQLiteDatabase db;
@@ -301,10 +479,5 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
 
     }
-    /*public boolean addColumnValue(){
-        return true;
-    }
-    public Boolean update(String queNo) {
-        return c;
-    }*/
+
 }

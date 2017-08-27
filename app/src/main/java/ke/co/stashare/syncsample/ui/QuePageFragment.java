@@ -103,7 +103,12 @@ public class QuePageFragment extends Fragment {
 
         if(Objects.equals(quiz.getQue_type(), "Multi-radio")){
 
-            adapterList = Arrays.asList(quiz.getSelections().split(","));
+            String gg="January'February'March'April'May'June'July'August'September'October'November'December";
+
+            List ggList = new ArrayList<String>(Arrays.asList(gg.split("'")));
+
+            Log.d("ggList", String.valueOf(ggList));
+            adapterList = Arrays.asList(quiz.getSelections().split("'"));
 
             Log.d("ADAPLIST", String.valueOf(adapterList));
 
@@ -123,7 +128,7 @@ public class QuePageFragment extends Fragment {
         }else if(Objects.equals(quiz.getQue_type(), "Single-Response")){
 
 
-            adapterList = Arrays.asList(quiz.getSingle_response().split(","));
+            adapterList = Arrays.asList(quiz.getSingle_response().split("'"));
 
             Log.d("ADAPLIST", String.valueOf(adapterList));
 
@@ -139,7 +144,7 @@ public class QuePageFragment extends Fragment {
 
             }
 
-            myEditTextAdapter = new MyEditTextAdapter(quiz.getQue_no(),headers,mDataSet);
+            myEditTextAdapter = new MyEditTextAdapter(getActivity(),quiz.getQue_no(),headers,mDataSet);
 
 
             que_ans.setHasFixedSize(true);
@@ -151,7 +156,7 @@ public class QuePageFragment extends Fragment {
         }
         else if (Objects.equals(quiz.getQue_type(), "Multiple")){
 
-            adapterList = Arrays.asList(quiz.getSelections().split(","));
+            adapterList = Arrays.asList(quiz.getSelections().split("'"));
 
             Log.d("ADAPLIST", String.valueOf(adapterList));
 
@@ -167,7 +172,7 @@ public class QuePageFragment extends Fragment {
 
             }
 
-            multipleTextAdapter = new MultipleTextAdapter(quiz.getQue_no(),headers,mDataSet);
+            multipleTextAdapter = new MultipleTextAdapter(getActivity(),quiz.getQue_no(),headers,mDataSet);
 
             que_ans.setHasFixedSize(true);
 
@@ -180,7 +185,7 @@ public class QuePageFragment extends Fragment {
 
         else if (Objects.equals(quiz.getQue_type(), "Multiple-Months")){
 
-            adapterList = Arrays.asList(quiz.getSelections().split(","));
+            adapterList = Arrays.asList(quiz.getSelections().split("'"));
             for (int i = 0; i<adapterList.size(); i++) {
 
                 String sel= adapterList.get(i);
@@ -208,7 +213,7 @@ public class QuePageFragment extends Fragment {
             que_ans.setAdapter(sampleCheckAdapter);
         }
         else{
-            adapterList = Arrays.asList(quiz.getSelections().split(","));
+            adapterList = Arrays.asList(quiz.getSelections().split("'"));
             for (int i = 0; i<adapterList.size(); i++) {
 
                 String sel= adapterList.get(i);

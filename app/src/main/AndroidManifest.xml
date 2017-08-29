@@ -26,8 +26,10 @@
         <activity android:name=".ui.QuestionPage"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".ui.StartSurvey"/>
-        <activity android:name=".survey.ListNavigationAndroid"/>
         <activity android:name=".ui.MainActivity"/>
+        <activity android:name=".survey.ListNavigationAndroid"/>
+        <activity android:name=".ui.Assesso"/>
+        <activity android:name=".ui.StartAssessment"/>
         <activity android:name=".ui.TestUi"/>
         <activity android:name=".bignerd.SlideSec"/>
         <activity android:name=".ui.DynamicUi"/>

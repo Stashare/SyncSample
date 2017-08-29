@@ -1,7 +1,12 @@
 package ke.co.stashare.syncsample.survey.helper;
 
+/**
+ * Created by Ken Wainaina on 28/08/2017.
+ */
+
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.RequiresApi;
@@ -25,35 +30,40 @@ import java.util.List;
 import java.util.Objects;
 
 import ke.co.stashare.syncsample.R;
+import ke.co.stashare.syncsample.helper.AppController;
 
-/**
- * Created by Ken Wainaina on 21/08/2017.
- */
-
-public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .ViewHolder> {
+public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter.ViewHolder> {
 
     private String[] mDataset;
     private String[] headerTexts;
+    private String[] que_titles;
     private String question_no;
+    private String rando;
+    private String[] temp_headerTexts;
+    private String[] temp_ansTexts;
+    private List<String> adapterList;
     private List<Answers> ans;
-    private List<String>ansWithComma;
+    private List<String> ansWithComma;
     private List<String> mFeedList;
+    private DatabaseHelper db;
     private List<Answers> temp_ans;
     Context context;
 
-    public MyEditTextAdapter(Context context,String question_no,String[] headerTexts,String[] myDataset) {
+    public GeneralInfoAdapter(DatabaseHelper db,Context context, String[] headerTexts,String[] que_titles, String[] myDataset,String rando) {
         //this.mFeedList = feedList;
-        this.context= context;
-        mDataset = myDataset;
+        this.context = context;
+        this.db = db;
+        this.mDataset = myDataset;
+        this.rando = rando;
         this.headerTexts = headerTexts;
-        this.question_no = question_no;
+        this.que_titles = que_titles;
 
     }
 
     @Override
-    public MyEditTextAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_edittext, parent, false);
+    public GeneralInfoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
+                                                            int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.generalinfo_item, parent, false);
         // pass MyCustomEditTextListener to viewholder in onCreateViewHolder
         // so that we don't have to do this expensive allocation in onBindViewHolder
         ViewHolder vh = new ViewHolder(v, new MyCustomEditTextListener());
@@ -84,7 +94,7 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
 
         public ViewHolder(View v, MyCustomEditTextListener myCustomEditTextListener) {
             super(v);
-            this.header = (TextView)v.findViewById(R.id.header_text);
+            this.header = (TextView) v.findViewById(R.id.header_text);
             this.mEditText = (EditText) v.findViewById(R.id.editText);
             this.myCustomEditTextListener = myCustomEditTextListener;
             this.mEditText.addTextChangedListener(myCustomEditTextListener);
@@ -112,7 +122,14 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
             mDataset[position] = charSequence.toString();
 
             ansWithComma = new ArrayList<>();
-            ans= new ArrayList<>();
+            adapterList = new ArrayList<>();
+
+            //Login user
+            AppController.getInstance().addRando(rando);
+
+            ansWithComma.add(rando);
+
+            ans = new ArrayList<>();
             temp_ans = new ArrayList<Answers>();
             //android.text.TextUtils.join(",", mDataset[position]);
             //Log.d("DATS", Arrays.toString(mDataset));
@@ -120,12 +137,41 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
             Collections.addAll(ansWithComma, mDataset);
 
             Collections.replaceAll(ansWithComma, null, "none");
+
             Collections.replaceAll(ansWithComma, "", "none");
 
-            String majibu= android.text.TextUtils.join(",", ansWithComma);
+            String majibu = android.text.TextUtils.join(",", ansWithComma);
 
             Log.d("mDAT", majibu);
-            Answers ansi = new Answers(question_no,majibu);
+
+
+            Collections.addAll(adapterList, que_titles);
+
+            adapterList.add(0,"random_id");
+
+            Log.d("adapterList", String.valueOf((adapterList)));
+
+            temp_headerTexts = new String[adapterList.size()];
+
+            temp_headerTexts = adapterList.toArray(temp_headerTexts);
+            Log.d("mDAT_col", Arrays.toString(temp_headerTexts));
+
+            temp_ansTexts = new  String[ansWithComma.size()];
+
+
+            temp_ansTexts = ansWithComma.toArray(temp_ansTexts);
+
+            Log.d("mDAT_ans", Arrays.toString(temp_ansTexts));
+
+
+
+            db.createGenInfoTable("geninfo_answers", temp_headerTexts,temp_ansTexts);
+
+
+
+
+/*
+            Answers ansi = new Answers(question_no, majibu);
 
             ans.add(ansi);
 
@@ -136,13 +182,12 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
 
             temp_ans = dbL.getResults();
 
-            if(temp_ans.size()== 0){
+            if (temp_ans.size() == 0) {
 
                 DbList dbList = new DbList(ans);
 
                 save_DbList_To_Shared_Prefs(context, dbList);
-            }
-            else {
+            } else {
 
                 for (Iterator<Answers> iterator = temp_ans.iterator(); iterator.hasNext(); ) {
                     Answers value = iterator.next();
@@ -161,7 +206,7 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
                 save_DbList_To_Shared_Prefs(context, dbList);
 
             }
-
+*/
 
 
             ansWithComma.clear();
@@ -175,7 +220,7 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
     }
 
 
-    public void save_DbList_To_Shared_Prefs(Context context,DbList dbList) {
+    public void save_DbList_To_Shared_Prefs(Context context, DbList dbList) {
         SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
@@ -188,7 +233,7 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
 
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public  DbList get_DbList_From_Shared_Prefs(Context context) {
+    public DbList get_DbList_From_Shared_Prefs(Context context) {
 
         List<Answers> results = new ArrayList<>();
 
@@ -197,16 +242,13 @@ public class MyEditTextAdapter extends RecyclerView.Adapter<MyEditTextAdapter .V
         Gson gson = new Gson();
         String json = appSharedPrefs.getString("dblist", "");
 
-        DbList dbList= new DbList(results);
+        DbList dbList = new DbList(results);
 
-        if(!Objects.equals(json, "")){
+        if (!Objects.equals(json, "")) {
 
             dbList = gson.fromJson(json, DbList.class);
         }
 
         return dbList;
     }
-
-
 }
-

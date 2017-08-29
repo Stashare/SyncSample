@@ -52,6 +52,8 @@ import ke.co.stashare.syncsample.survey.helper.DatabaseHelper;
 import ke.co.stashare.syncsample.survey.helper.Que;
 import ke.co.stashare.syncsample.survey.helper.SavedData;
 import ke.co.stashare.syncsample.ui.QuestionPage;
+import ke.co.stashare.syncsample.ui.StartAssessment;
+import ke.co.stashare.syncsample.ui.StartSurvey;
 
 /**
  * Created by Ken Wainaina on 12/08/2017.
@@ -61,9 +63,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int NUMBER_OF_PAGES = 10;
     private static final String TAG = "Pager";
+
+    public static final String IMPORT_DB_GENQCOL = "http://104.236.111.61/testApi/GetGenQueCol.php";
     public static final String IMPORT_DB_QCOL = "http://104.236.111.61/testApi/GetQueCol.php";
     public static final String IMPORT_DB_SUBQCOL = "http://104.236.111.61/testApi/GetSubQueCol.php";
 
+    public static final String IMPORT_DB_GETGENINFO = "http://104.236.111.61/testApi/GetGenInfo.php";
     public static final String IMPORT_DB_GETQUE = "http://104.236.111.61/testApi/GetQuestions.php";
     public static final String IMPORT_DB_GETSUBQUE = "http://104.236.111.61/testApi/GetSubQue.php";
 
@@ -73,8 +78,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     List<String>tables_name;
     List<Que> sample;
     List<String>questions_col;
+    List<String>genquestions_col;
     List<String>subquestion_col;
     List<String> que_feed;
+    List<String> genque_feed;
     List<String>temp_quefeed;
     List<String> subque_feed;
     Button assessment;
@@ -94,7 +101,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tables_name = new ArrayList<>();
         questions_col = new ArrayList<>();
         subquestion_col = new ArrayList<>();
+        genquestions_col = new ArrayList<>();
         que_feed = new ArrayList<>();
+        genque_feed = new ArrayList<>();
         sample = new ArrayList<>();
         subque_feed = new ArrayList<>();
 
@@ -126,6 +135,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void importDb() {
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, IMPORT_DB_GENQCOL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        genquestions_col.clear();
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray que_col = res.getJSONArray("genquestions_col");
+
+                            for (int i = 0; i < que_col.length(); i++) {
+                                JSONObject obj = que_col.getJSONObject(i);
+
+                                String col = obj.getString("COLUMN_NAME");
+
+                                genquestions_col.add(col);
+                            }
+
+                            sourceGenQuestions();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(stringRequest);
 
 
         StringRequest stringRequest2 = new StringRequest(Request.Method.GET, IMPORT_DB_QCOL,
@@ -218,6 +262,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Log.d("COL_QUE", String.valueOf(questions_col));
         Log.d("COL_SUBQUE", String.valueOf(subquestion_col));
+
+    }
+
+
+    private void sourceGenQuestions(){
+
+        StringRequest stringRequestGetQue = new StringRequest(Request.Method.GET, IMPORT_DB_GETGENINFO,
+                new Response.Listener<String>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                    @Override
+                    public void onResponse(String response) {
+
+                        try {
+                            JSONObject res = new JSONObject(response);
+                            JSONArray que = res.getJSONArray("genquestions");
+
+                            for (int i = 0; i < que.length(); i++) {
+                                JSONObject obj = que.getJSONObject(i);
+
+                                for(int j = 0; j < genquestions_col.size(); j++){
+
+                                    String tbl = obj.getString(genquestions_col.get(j));
+
+                                    if (Objects.equals(tbl, "")){
+                                        tbl="none";
+                                    }
+
+                                    Log.d("GEN_COL", String.valueOf(tbl));
+                                    genque_feed.add(tbl);
+                                }
+                                Log.d("GENQUE_FEED", String.valueOf(genque_feed));
+
+                                Log.d("GENQUE_COL", String.valueOf(genquestions_col));
+                                db.CreateTableRow (DatabaseHelper.GENERALINFO_TABLE, genquestions_col,genque_feed);
+                                genque_feed.clear();
+
+
+                            }
+
+
+                            //loadQue(DatabaseHelper.QUE_TABLE);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(stringRequestGetQue);
 
     }
 
@@ -336,7 +435,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
      if (v == assessment) {
-         Intent intent = new Intent(MainActivity.this, QuestionPage.class);
+         Intent intent = new Intent(MainActivity.this, StartAssessment.class);
          startActivity(intent);
          finish();
      }

@@ -21,8 +21,9 @@
     <string name="que_id">id</string>
     <string name="que">que</string>
     <string name="que_type">que_type</string>
+    <string name="new_assessment">NEW ASSESSMENT</string>
 
-        <string-array name="general_intro_info">
+    <string-array name="general_intro_info">
             <item>Country</item>
             <item>Province/Region</item>
             <item>District/County</item>

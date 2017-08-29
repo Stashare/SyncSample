@@ -242,20 +242,6 @@ public class QuePageFragment extends Fragment {
         }
 
 
-        //subque.setText(quiz.getPhone());
-
-       /* Button btnClick=(Button) view.findViewById(R.id.btnClick);
-
-        btnClick.setOnClickListener(new  View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(getActivity(), "Clciked "+textView1.getText().toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
-
 
         return view;
     }

@@ -30,6 +30,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String QUE_TABLE = "questions";
     public static final String SUBQUE_TABLE = "subque_table";
     public static final String GENERALINFO_TABLE = "generalinfo_table";
+    public static final String GENERALINFO_ANSWERS = "generalinfo_answers";
     public static final String SECTION_ANSWERS = "section_answers";
     public static final String COLUMN_ID = "_id";
     public static final String ID = "id";
@@ -58,7 +59,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         onCreate(db);
     }
+
     public Cursor getQue(String tbl,String order_col) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //String sq= "SELECT EMP_ID, NAME, DEPT FROM COMPANY LEFT OUTER JOIN DEPARTMENT ON COMPANY.ID = DEPARTMENT.EMP_ID";
+
+        String sqt= "SELECT * FROM questions LEFT OUTER JOIN subque_table ON questions.que_no = subque_table.parent_question" + " ORDER BY " + order_col + " ASC;";
+
+
+        //String sql = "SELECT * FROM " + tbl + " ORDER BY " + order_col + " ASC;";
+        Cursor c = db.rawQuery(sqt, null);
+        return c;
+    }
+    public Cursor getAnyQue(String tbl,String order_col) {
         SQLiteDatabase db = this.getReadableDatabase();
         String sql = "SELECT * FROM " + tbl + " ORDER BY " + order_col + " ASC;";
         Cursor c = db.rawQuery(sql, null);
@@ -360,6 +374,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (mCursor != null) mCursor.close();
         }
     }
+
     public Cursor getColumns(String tbl,String user_id){
         SQLiteDatabase db = this.getReadableDatabase();
 

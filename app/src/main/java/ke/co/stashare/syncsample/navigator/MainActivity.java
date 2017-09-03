@@ -435,6 +435,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
      if (v == assessment) {
+         final ProgressDialog progressDialog = new ProgressDialog(this);
+         progressDialog.setMessage("Please Wait...");
+         progressDialog.setCanceledOnTouchOutside(false);
+         progressDialog.show();
+
          Intent intent = new Intent(MainActivity.this, StartAssessment.class);
          startActivity(intent);
          finish();

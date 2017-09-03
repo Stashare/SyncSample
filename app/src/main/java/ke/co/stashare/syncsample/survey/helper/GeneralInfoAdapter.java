@@ -41,6 +41,7 @@ public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter
     private String rando;
     private String[] temp_headerTexts;
     private String[] temp_ansTexts;
+    private String[] hints;
     private List<String> adapterList;
     private List<Answers> ans;
     private List<String> ansWithComma;
@@ -49,12 +50,13 @@ public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter
     private List<Answers> temp_ans;
     Context context;
 
-    public GeneralInfoAdapter(DatabaseHelper db,Context context, String[] headerTexts,String[] que_titles, String[] myDataset,String rando) {
+    public GeneralInfoAdapter(DatabaseHelper db,Context context, String[] headerTexts,String[] que_titles, String[] hints,String[] myDataset,String rando) {
         //this.mFeedList = feedList;
         this.context = context;
         this.db = db;
         this.mDataset = myDataset;
         this.rando = rando;
+        this.hints = hints;
         this.headerTexts = headerTexts;
         this.que_titles = que_titles;
 
@@ -78,6 +80,7 @@ public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter
         holder.myCustomEditTextListener.updatePosition(holder.getAdapterPosition());
         holder.header.setText(headerTexts[holder.getAdapterPosition()]);
         holder.mEditText.setText(mDataset[holder.getAdapterPosition()]);
+        holder.mEditText.setHint(hints[holder.getAdapterPosition()]);
     }
 
     @Override
@@ -124,7 +127,6 @@ public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter
             ansWithComma = new ArrayList<>();
             adapterList = new ArrayList<>();
 
-            //Login user
             AppController.getInstance().addRando(rando);
 
             ansWithComma.add(rando);

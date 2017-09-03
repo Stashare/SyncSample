@@ -51,6 +51,7 @@ public class Assesso extends AppCompatActivity  implements View.OnClickListener 
 
     Button new_assess;
     private Handler mHandler;
+    List<Colvalues> getUploadList2;
     List<Colvalues> getUploadList;
     ProgressDialog progressDialog2;
     private Toolbar mToolbar;
@@ -75,11 +76,10 @@ public class Assesso extends AppCompatActivity  implements View.OnClickListener 
             getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         }
 
-        Intent getTables = getIntent();
+        //Intent getTables = getIntent();
 
         getUploadList = new ArrayList<>();
-        col = getTables.getStringExtra("columns");
-        colVal = getTables.getStringExtra("values");
+        getUploadList2 = new ArrayList<>();
 
 
         new_assess = (Button)findViewById(R.id.assessment_new);
@@ -92,6 +92,10 @@ public class Assesso extends AppCompatActivity  implements View.OnClickListener 
         switch (v.getId()) {
 
             case R.id.assessment_new:
+                final ProgressDialog progressDialog = new ProgressDialog(this);
+                progressDialog.setMessage("Please Wait...");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
                 Intent intent = new Intent(Assesso.this, StartAssessment.class);
                 startActivity(intent);
                 finish();
@@ -115,14 +119,10 @@ public class Assesso extends AppCompatActivity  implements View.OnClickListener 
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menuUpload) {
-            // Sometimes, when fragment has huge data, screen seems hanging
-            // when switching between navigation menus
-            // So using runnable, the fragment is loaded with cross fade effect
-            // This effect can be seen in GMail app
             Runnable mPendingRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    UploadLst uploadLst = get_UploadList_From_Shared_Prefs(Assesso.this);
+                    UploadLst uploadLst = get_UploadList_From_Shared_Prefs(Assesso.this,"uploadList");
 
                     getUploadList.clear();
 
@@ -139,6 +139,23 @@ public class Assesso extends AppCompatActivity  implements View.OnClickListener 
                         UploadDb(DatabaseHelper.SECTION_ANSWERS,columns,values);
                     }
 
+                    UploadLst uploadLst2 = get_UploadList_From_Shared_Prefs(Assesso.this,"uploadList2");
+
+                    getUploadList2.clear();
+
+                    getUploadList2 = uploadLst2.getResults();
+
+
+                    for(Colvalues colva: getUploadList2){
+                        String columns= colva.getCol();
+                        String values = colva.getValues();
+
+                        Log.d("ASSESS_GENCOL", columns);
+
+                        Log.d("ASSESS_GENCOL", values);
+
+                        UploadDb(DatabaseHelper.GENERALINFO_ANSWERS,columns,values);
+                    }
                 }
             };
 
@@ -198,14 +215,14 @@ public class Assesso extends AppCompatActivity  implements View.OnClickListener 
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public UploadLst get_UploadList_From_Shared_Prefs(Context context) {
+    public UploadLst get_UploadList_From_Shared_Prefs(Context context,String listName) {
 
         List<Colvalues> results = new ArrayList<>();
 
         SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context.getApplicationContext());
         Gson gson = new Gson();
-        String json = appSharedPrefs.getString("uploadList", "");
+        String json = appSharedPrefs.getString(listName, "");
 
         UploadLst uploadLst = new UploadLst(results);
 

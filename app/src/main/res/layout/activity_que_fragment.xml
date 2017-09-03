@@ -143,7 +143,7 @@
             android:layout_marginStart="5dp"
             android:gravity="start"
             android:textStyle="bold"
-            android:textSize="15sp"
+            android:textSize="17sp"
             android:id="@+id/subque"
             android:textColor="@android:color/background_dark"
             android:layout_width="match_parent"
@@ -152,7 +152,6 @@
             android:layout_marginLeft="5dp" />
 
         <android.support.v7.widget.RecyclerView
-            android:visibility="visible"
             android:layout_marginTop="7dp"
             android:id="@+id/subque_answer"
             android:layout_weight="1"

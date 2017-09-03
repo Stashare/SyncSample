@@ -9,4 +9,5 @@ public class Constants {
     public static final String DATABASE_PATH_UPLOADS = "uploads";
     public static final String SHARED_PREF_NAME = "surveyAnswers";
     public static final String RANDOM_NO  = "surveyAnswers";
+    public static final String TIME_STAMP  = "time_stamp";
 }

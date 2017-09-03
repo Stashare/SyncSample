@@ -3,6 +3,7 @@ package ke.co.stashare.syncsample.ui;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -38,12 +40,21 @@ import ke.co.stashare.syncsample.survey.helper.SampleCheckAdapter;
 
 public class QuePageFragment extends Fragment {
     FeederAdapter feederAdapter;
-    SampleCheckAdapter sampleCheckAdapter;
     List<CheckModel> checkList;
     List<Answers>answers;
     List<String> adapterList;
+    List<String> subque_adapterList;
+    private Handler mHandler;
+    SampleCheckAdapter sampleCheckAdapter;
+
+    FeederAdapter subque_feederAdapter;
+    SampleCheckAdapter subque_sampleCheckAdapter;
+    MyEditTextAdapter subque_myEditTextAdapter;
+    MultipleTextAdapter subque_multipleTextAdapter;
+
     MyEditTextAdapter myEditTextAdapter;
     MultipleTextAdapter multipleTextAdapter;
+
     public static QuePageFragment newInstance(Quiz singleque) {
 
         QuePageFragment pageFragment = new QuePageFragment();
@@ -71,10 +82,14 @@ public class QuePageFragment extends Fragment {
 
         final TextView que = (TextView) view.findViewById(R.id.que);
         final TextView subque = (TextView) view.findViewById(R.id.subque);
+
         final TextView toolbarText = (TextView) view.findViewById(R.id.toolbar_text);
         final TextView subsection_text = (TextView) view.findViewById(R.id.sub_section);
 
-        RecyclerView que_ans =(RecyclerView)view.findViewById(R.id.que_answer);
+        final RecyclerView que_ans =(RecyclerView)view.findViewById(R.id.que_answer);
+
+        final LinearLayout subque_layout= (LinearLayout)view.findViewById(R.id.subque_lay);
+        final RecyclerView subque_ans =(RecyclerView)view.findViewById(R.id.subque_answer);
 
         Toolbar mToolbar = (Toolbar)view.findViewById(R.id.toolbar);
         AppCompatActivity activity = (AppCompatActivity)getActivity();
@@ -84,11 +99,13 @@ public class QuePageFragment extends Fragment {
         assert actionBar != null;
         actionBar.setDisplayShowTitleEnabled(false);
 
-        Quiz quiz= (Quiz) getArguments().getSerializable("question");
+        final Quiz quiz= (Quiz) getArguments().getSerializable("question");
 
+        mHandler = new Handler();
         checkList = new ArrayList<>();
         adapterList =new ArrayList<>();
         answers = new ArrayList<>();
+        subque_adapterList = new ArrayList<>();
 
         assert quiz != null;
         toolbarText.setText(quiz.getSection());
@@ -100,146 +117,217 @@ public class QuePageFragment extends Fragment {
 
         Answers ans = new Answers("A.1","Male");
         answers.add(ans);
+        Runnable mPendingRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (Objects.equals(quiz.getIs_subque(), "yes")) {
 
-        if(Objects.equals(quiz.getQue_type(), "Multi-radio")){
+                    subque_layout.setVisibility(View.VISIBLE);
 
-            String gg="January'February'March'April'May'June'July'August'September'October'November'December";
+                    if (Objects.equals(quiz.getSubque_type(), "Multiple")) {
+                        subque_adapterList = Arrays.asList(quiz.getSubque_selections().split("'"));
 
-            List ggList = new ArrayList<String>(Arrays.asList(gg.split("'")));
+                        Log.d("ADAPLIST", String.valueOf(subque_adapterList ));
 
-            Log.d("ggList", String.valueOf(ggList));
-            adapterList = Arrays.asList(quiz.getSelections().split("'"));
+                        String[] mDataSet = new String[subque_adapterList.size()];
 
-            Log.d("ADAPLIST", String.valueOf(adapterList));
+                        String[] headers = new String[subque_adapterList.size()];
 
-            //FeederAdapter(Context context, List<String> feedList,String[] myDataset,String question_no)
+                        for (int i = 0; i < subque_adapterList.size(); i++) {
 
-            feederAdapter = new FeederAdapter(getActivity(),adapterList,quiz.getQue_no());
+                            String sel = subque_adapterList.get(i);
 
-            feederAdapter.setWithRadioBtnElement(true);
+                            headers[i] = sel;
 
-            que_ans.setHasFixedSize(true);
+                        }
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                        subque_multipleTextAdapter = new MultipleTextAdapter(getActivity(), quiz.getSubque_no(), headers, mDataSet);
 
-            que_ans.setLayoutManager(llm);
-            que_ans.setAdapter(feederAdapter);
+                        que_ans.setHasFixedSize(true);
 
-        }else if(Objects.equals(quiz.getQue_type(), "Single-Response")){
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
 
+                        subque_ans.setLayoutManager(llm);
 
-            adapterList = Arrays.asList(quiz.getSingle_response().split("'"));
+                        subque_ans.setAdapter(subque_multipleTextAdapter);
 
-            Log.d("ADAPLIST", String.valueOf(adapterList));
 
-            String[] mDataSet = new String[adapterList.size()];
 
-            String[] headers = new String[adapterList.size()];
+                    } else if (Objects.equals(quiz.getSubque_type(), "Single-Response")) {
 
-            for (int i = 0; i<adapterList.size(); i++) {
 
-                String sel= adapterList.get(i);
+                        subque_adapterList = Arrays.asList(quiz.getSubque_singleResponse().split("'"));
 
-                headers[i] = sel;
+                        Log.d("ADAPLIST", String.valueOf(subque_adapterList));
 
-            }
+                        String[] mDataSet = new String[subque_adapterList.size()];
 
-            myEditTextAdapter = new MyEditTextAdapter(getActivity(),quiz.getQue_no(),headers,mDataSet);
+                        String[] headers = new String[subque_adapterList.size()];
 
+                        for (int i = 0; i < subque_adapterList.size(); i++) {
 
-            que_ans.setHasFixedSize(true);
+                            String sel = subque_adapterList.get(i);
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                            headers[i] = sel;
 
-            que_ans.setLayoutManager(llm);
-            que_ans.setAdapter(myEditTextAdapter);
-        }
-        else if (Objects.equals(quiz.getQue_type(), "Multiple")){
+                        }
 
-            adapterList = Arrays.asList(quiz.getSelections().split("'"));
+                        subque_myEditTextAdapter = new MyEditTextAdapter(getActivity(), quiz.getSubque_no(), headers, mDataSet);
 
-            Log.d("ADAPLIST", String.valueOf(adapterList));
 
-            String[] mDataSet = new String[adapterList.size()];
+                        subque_ans.setHasFixedSize(true);
 
-            String[] headers = new String[adapterList.size()];
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
 
-            for (int i = 0; i<adapterList.size(); i++) {
+                        subque_ans.setLayoutManager(llm);
+                        subque_ans.setAdapter(subque_myEditTextAdapter);
+                    }
+                }
 
-                String sel= adapterList.get(i);
+                    if (Objects.equals(quiz.getQue_type(), "Multi-radio")) {
 
-                headers[i] = sel;
+                        String gg = "January'February'March'April'May'June'July'August'September'October'November'December";
 
-            }
+                        List ggList = new ArrayList<String>(Arrays.asList(gg.split("'")));
 
-            multipleTextAdapter = new MultipleTextAdapter(getActivity(),quiz.getQue_no(),headers,mDataSet);
+                        Log.d("ggList", String.valueOf(ggList));
+                        adapterList = Arrays.asList(quiz.getSelections().split("'"));
 
-            que_ans.setHasFixedSize(true);
+                        Log.d("ADAPLIST", String.valueOf(adapterList));
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                        //FeederAdapter(Context context, List<String> feedList,String[] myDataset,String question_no)
 
-            que_ans.setLayoutManager(llm);
+                        feederAdapter = new FeederAdapter(getActivity(), adapterList, quiz.getQue_no());
 
-            que_ans.setAdapter(multipleTextAdapter);
-        }
+                        feederAdapter.setWithRadioBtnElement(true);
 
-        else if (Objects.equals(quiz.getQue_type(), "Multiple-Months")){
+                        que_ans.setHasFixedSize(true);
 
-            adapterList = Arrays.asList(quiz.getSelections().split("'"));
-            for (int i = 0; i<adapterList.size(); i++) {
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
 
-                String sel= adapterList.get(i);
+                        que_ans.setLayoutManager(llm);
+                        que_ans.setAdapter(feederAdapter);
 
-                CheckModel checkModel = new CheckModel(sel,false);
+                    } else if (Objects.equals(quiz.getQue_type(), "Single-Response")) {
 
-                //ADD ITR TO COLLECTION
-                checkList.add(checkModel);
 
+                        adapterList = Arrays.asList(quiz.getSingle_response().split("'"));
 
-                //temp_result.add(i, results.get(i));
+                        Log.d("ADAPLIST", String.valueOf(adapterList));
 
-            }
+                        String[] mDataSet = new String[adapterList.size()];
 
-            Log.d("SELE_MONTHS", String.valueOf(checkList.size()));
+                        String[] headers = new String[adapterList.size()];
 
-            sampleCheckAdapter= new SampleCheckAdapter(getActivity(),quiz.getQue_no(),checkList);
+                        for (int i = 0; i < adapterList.size(); i++) {
 
-            que_ans.setHasFixedSize(true);
+                            String sel = adapterList.get(i);
 
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(),2);
+                            headers[i] = sel;
 
-            que_ans.setLayoutManager(gridLayoutManager);
+                        }
 
-            que_ans.setAdapter(sampleCheckAdapter);
-        }
-        else{
-            adapterList = Arrays.asList(quiz.getSelections().split("'"));
-            for (int i = 0; i<adapterList.size(); i++) {
+                        myEditTextAdapter = new MyEditTextAdapter(getActivity(), quiz.getQue_no(), headers, mDataSet);
 
-                String sel= adapterList.get(i);
 
-                CheckModel checkModel = new CheckModel(sel,false);
+                        que_ans.setHasFixedSize(true);
 
-                //ADD ITR TO COLLECTION
-                checkList.add(checkModel);
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
 
+                        que_ans.setLayoutManager(llm);
+                        que_ans.setAdapter(myEditTextAdapter);
+                    } else if (Objects.equals(quiz.getQue_type(), "Multiple")) {
 
-                //temp_result.add(i, results.get(i));
+                        adapterList = Arrays.asList(quiz.getSelections().split("'"));
 
-            }
+                        Log.d("ADAPLIST", String.valueOf(adapterList));
 
-            Log.d("SELE", String.valueOf(checkList.size()));
+                        String[] mDataSet = new String[adapterList.size()];
 
-            sampleCheckAdapter= new SampleCheckAdapter(getActivity(),quiz.getQue_no(),checkList);
+                        String[] headers = new String[adapterList.size()];
 
-            que_ans.setHasFixedSize(true);
+                        for (int i = 0; i < adapterList.size(); i++) {
 
-            LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+                            String sel = adapterList.get(i);
 
-            que_ans.setLayoutManager(llm);
+                            headers[i] = sel;
 
-            que_ans.setAdapter(sampleCheckAdapter);
-        }
+                        }
+
+                        multipleTextAdapter = new MultipleTextAdapter(getActivity(), quiz.getQue_no(), headers, mDataSet);
+
+                        que_ans.setHasFixedSize(true);
+
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+
+                        que_ans.setLayoutManager(llm);
+
+                        que_ans.setAdapter(multipleTextAdapter);
+                    } else if (Objects.equals(quiz.getQue_type(), "Multiple-Months")) {
+
+                        adapterList = Arrays.asList(quiz.getSelections().split("'"));
+                        for (int i = 0; i < adapterList.size(); i++) {
+
+                            String sel = adapterList.get(i);
+
+                            CheckModel checkModel = new CheckModel(sel, false);
+
+                            //ADD ITR TO COLLECTION
+                            checkList.add(checkModel);
+
+
+                            //temp_result.add(i, results.get(i));
+
+                        }
+
+                        Log.d("SELE_MONTHS", String.valueOf(checkList.size()));
+
+                        sampleCheckAdapter = new SampleCheckAdapter(getActivity(), quiz.getQue_no(), checkList);
+
+                        que_ans.setHasFixedSize(true);
+
+                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+
+                        que_ans.setLayoutManager(gridLayoutManager);
+
+                        que_ans.setAdapter(sampleCheckAdapter);
+                    } else {
+                        adapterList = Arrays.asList(quiz.getSelections().split("'"));
+                        for (int i = 0; i < adapterList.size(); i++) {
+
+                            String sel = adapterList.get(i);
+
+                            CheckModel checkModel = new CheckModel(sel, false);
+
+                            //ADD ITR TO COLLECTION
+                            checkList.add(checkModel);
+
+
+                            //temp_result.add(i, results.get(i));
+
+                        }
+
+                        Log.d("SELE", String.valueOf(checkList.size()));
+
+                        sampleCheckAdapter = new SampleCheckAdapter(getActivity(), quiz.getQue_no(), checkList);
+
+                        que_ans.setHasFixedSize(true);
+
+                        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+
+                        que_ans.setLayoutManager(llm);
+
+                        que_ans.setAdapter(sampleCheckAdapter);
+                    }
+
+
+                }
+
+        };
+
+        // If mPendingRunnable is not null, then add to the message queue
+        mHandler.post(mPendingRunnable);
+
 
 
 

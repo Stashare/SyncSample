@@ -50,11 +50,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
+        android:layout_marginBottom="10dp"
         android:paddingBottom="@dimen/md_keylines"
-        android:paddingEnd="5dp"
-        android:paddingStart="5dp"
         android:scrollbars="vertical" />
     <Button
+        android:layout_marginTop="10dp"
         app:layout_anchor="@+id/my_recycler_view"
         app:layout_anchorGravity="bottom|center"
         android:id="@+id/proceed"

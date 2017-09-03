@@ -37,11 +37,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -76,24 +82,38 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
 
     ArrayList<Quiz> sample;
     List<Colvalues> coluValue;
+    List<Colvalues> gen_coluValue;
     List<String> rando;
+    List<String> gen_rando;
     private QueFragmentPagerAdapter mMyFragmentPagerAdapter;
     private DatabaseHelper db;
     String[] qsnList;
     List<String>user_ids;
     String[] ansList;
     List <String> temp_hh;
+    List <String> gentemp_hh;
     String[] qsnList_temp;
     List<String> hh;
+    List<String> genhh;
     String[] ansList_temp;
     List<String> qList_temp;
     String[] temp_colNames;
+    String[] temp_gencolNames;
     List<String> aList_temp;
     String[] valueof_Colms;
     ProgressDialog progressDialog2;
     RelativeLayout saveBtn;
     private List<Answers> temp_ans;
-   ProgressDialog progressDialog;
+    Handler mHandler;
+
+    String[] startTimeDateCol;
+    String[]startTimeDateValues;
+
+    List<String>listTimeDateCol;
+    List<String> listTimeDateValues;
+
+
+    ProgressDialog progressDialog;
     public static final String IMPORT_DB_CREATETABLE = "http://104.236.111.61/testApi/createTable.php";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,16 +138,25 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
 
         progressDialog = new ProgressDialog(this);
 
+        mHandler = new Handler();
+
         sample = new ArrayList<>();
         user_ids = new ArrayList<>();
         temp_hh = new ArrayList<>();
+        gentemp_hh = new ArrayList<>();
         temp_ans = new ArrayList<>();
         qList_temp = new ArrayList<>();
         aList_temp = new ArrayList<>();
         rando = new ArrayList<>();
+        gen_rando= new ArrayList<>();
         db = new DatabaseHelper(this);
         hh = new ArrayList<>();
+        genhh = new ArrayList<>();
         coluValue = new ArrayList<>();
+        gen_coluValue = new ArrayList<>();
+
+       listTimeDateCol= new ArrayList<>();
+       listTimeDateValues=new ArrayList<>();
 
 
         prev = (ImageView) findViewById(R.id.back);
@@ -262,7 +291,13 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
                         cursor.getString(cursor.getColumnIndex(String.valueOf("singleresponse_text"))),
                         cursor.getString(cursor.getColumnIndex(String.valueOf("selections"))),
                         cursor.getString(cursor.getColumnIndex(String.valueOf("section"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("sub_section")))
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("sub_section"))),
+
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("sub_que"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("single_resp_text"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("subque_type"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("subque_no"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("subque_selections")))
                 );
                 sample.add(quiz);
             } while (cursor.moveToNext());
@@ -272,173 +307,317 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void onClick(View v) {
+        public void onClick(View v) {
 
-        switch (v.getId()) {
+            switch (v.getId()) {
 
-            case R.id.save_data:
-                DbList dbL = get_DbList_From_Shared_Prefs(QuestionPage.this);
+                case R.id.save_data:
+                    Runnable mPendingRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            DbList dbL = get_DbList_From_Shared_Prefs(QuestionPage.this);
 
-                temp_ans.clear();
+                            temp_ans.clear();
 
-                temp_ans = dbL.getResults();
+                            temp_ans = dbL.getResults();
 
-                qsnList = new String[temp_ans.size()];
-                ansList = new String[temp_ans.size()];
+                            qsnList = new String[temp_ans.size()];
+                            ansList = new String[temp_ans.size()];
 
-                for (int i = 0; i < temp_ans.size(); i++) {
+                            for (int i = 0; i < temp_ans.size(); i++) {
 
-                    String qsn = temp_ans.get(i).getQue();
+                                String qsn = temp_ans.get(i).getQue();
 
-                    String new_qsn = qsn.replace(".", "_");
+                                String new_qsn = qsn.replace(".", "_");
 
-                    String n_qsn= new_qsn.toLowerCase();
+                                String n_qsn= new_qsn.toLowerCase();
 
-                    qsnList[i] = n_qsn;
+                                qsnList[i] = n_qsn;
 
-                }
-
-
-                for (int i = 0; i < temp_ans.size(); i++) {
-
-                    String asw = temp_ans.get(i).getAns();
-
-                    //String new_ans = asw.replace(",", "|");
-                   /* if (Objects.equals(asw, "")||Objects.equals(asw, null)) {
-
-                        asw = "none";
-                    }*/
-
-                    ansList[i] = asw;
-
-                }
-
-                Collections.addAll(qList_temp, qsnList);
-
-                Collections.addAll(aList_temp, ansList);
-
-              //qList_temp  = Arrays.asList(qsnList);
-                //aList_temp = Arrays.asList(ansList);
-
-                user_ids.add("1");
-
-                String r_id = AppController.getInstance().getGenRandom();
-
-                RandList randList = get_RandomList_From_Shared_Prefs(getApplicationContext());
-
-                user_ids.clear();
-
-                user_ids = randList.getResults();
-
-                user_ids.add(r_id);
-
-                RandList dbLis = new RandList(user_ids);
-
-                save_RandomList_To_Shared_Prefs(getApplicationContext(), dbLis);
-
-
-                qList_temp.add(0,"user_id");
-
-                aList_temp.add(0,r_id);
-
-                qsnList_temp = new String[qList_temp.size()];
-                ansList_temp = new String[aList_temp.size()];
-
-                qsnList_temp  = qList_temp.toArray(qsnList_temp);
-                ansList_temp = aList_temp.toArray(ansList_temp);
-
-                Log.d("QSNS", Arrays.toString(qsnList_temp));
-
-                Log.d("ANSW", Arrays.toString(ansList_temp));
-
-                Cursor c = db.createUsersTable("section_answers",qsnList_temp,ansList_temp);
-
-                Log.d("C_SIZE", String.valueOf(c.getCount()));
-
-
-                for(String id_num : user_ids){
-
-                        Cursor colmns = db.getColumns("section_answers", id_num);
-
-                        String[] colNames = colmns.getColumnNames();
-
-                       temp_hh = new ArrayList<>();
-
-                        hh = Arrays.asList(colNames);
-
-
-
-                    for(int w=0; w < hh.size();w++){
-                        String sel = hh.get(w);
-
-                        if(!(Objects.equals(sel, "_id"))){
-
-                            temp_hh.add(sel);
-                        }
-                    }
-
-                    temp_colNames = new String[(temp_hh.size())];
-
-                    temp_colNames  = temp_hh.toArray(temp_colNames);
-
-                    int count = colmns.getColumnCount();
-
-                    valueof_Colms= new String[count];
-                    Log.d("COL_COUNT", String.valueOf(count));
-
-                    rando.clear();
-
-                    if  (colmns.moveToFirst())
-                    {
-                        do
-                        {
-                            for (int i =1 ; i < count; i++)
-                            {
-                                //rando.add(colmns.getString(i));
-
-                                rando.add(colmns.getString(colmns
-                                        .getColumnIndex(colNames[i])));
                             }
+
+
+                            for (int i = 0; i < temp_ans.size(); i++) {
+
+                                String asw = temp_ans.get(i).getAns();
+
+
+                                ansList[i] = asw;
+
+                            }
+
+                            Collections.addAll(qList_temp, qsnList);
+
+                            Collections.addAll(aList_temp, ansList);
+
+                            user_ids.add("1");
+
+                            String r_id = AppController.getInstance().getGenRandom();
+
+                            RandList randList = get_RandomList_From_Shared_Prefs(getApplicationContext());
+
+                            user_ids.clear();
+
+                            user_ids = randList.getResults();
+
+                            user_ids.add(r_id);
+
+                            RandList dbLis = new RandList(user_ids);
+
+                            save_RandomList_To_Shared_Prefs(getApplicationContext(), dbLis);
+
+
+                            qList_temp.add(0,"user_id");
+                            aList_temp.add(0,r_id);
+
+
+
+                            listTimeDateCol.add("user_id");
+                            listTimeDateCol.add("Assessment_end_time");
+                            listTimeDateCol.add("Assessment_total_time");
+
+                            listTimeDateValues.add(r_id);
+
+
+
+
+
+                            long srt = AppController.getInstance().getStartTime();
+
+
+                            DateFormat assessTime = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
+
+                            String endTime = assessTime.format(Calendar.getInstance().getTime());
+
+                            listTimeDateValues.add(endTime);
+
+
+                            try {
+                                Date date = assessTime.parse(endTime);
+
+                                long milliseconds = date.getTime();
+
+                                long total = milliseconds-srt;
+
+                                //int seconds=(int) (total/1000)%60;
+
+                                //long milliseconds = stopWatch.getTime();
+
+                                int sec = (int) ((total / 1000) % 60);
+                                int minutes = (int) ((total / 1000) / 60);
+
+                                String sec_v = String.valueOf(sec)+" seconds";
+
+                                String min_total= String.valueOf(minutes)+" minutes";
+
+
+                                listTimeDateValues.add(min_total);
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                            startTimeDateCol = new String[listTimeDateCol.size()];
+
+                            startTimeDateValues = new String[listTimeDateValues.size()];
+
+                            startTimeDateCol = listTimeDateCol.toArray(startTimeDateCol);
+
+                            startTimeDateValues=  listTimeDateValues.toArray(startTimeDateValues);
+
+                            Log.d("GenInfoQSNS", Arrays.toString(startTimeDateCol));
+
+                            Log.d("GenInfoANSW", Arrays.toString(startTimeDateValues));
+
+                            db.createGenInfoTable("geninfo_answers", startTimeDateCol, startTimeDateValues);
+
+
+
+
+
+
+                            qsnList_temp = new String[qList_temp.size()];
+                            ansList_temp = new String[aList_temp.size()];
+
+                            qsnList_temp  = qList_temp.toArray(qsnList_temp);
+                            ansList_temp = aList_temp.toArray(ansList_temp);
+
+                            Log.d("QSNS", Arrays.toString(qsnList_temp));
+
+                            Log.d("ANSW", Arrays.toString(ansList_temp));
+
+                            Cursor c = db.createUsersTable("section_answers",qsnList_temp,ansList_temp);
+
+                            Log.d("C_SIZE", String.valueOf(c.getCount()));
+
+
+                            //store finish time plus total time taken
+                            //add col- Time of Assessment (Finish),Time of Assessment (Total)
+
+                            //int end_time = Integer.parseInt(endTime);
+
+
+
+                            for(String id_num : user_ids){
+
+                                Cursor colmns = db.getColumns("section_answers", id_num);
+
+                                Cursor getGenTbl=  db.getColumns("geninfo_answers", id_num);
+
+                                String[] colNames = colmns.getColumnNames();
+
+                                temp_hh = new ArrayList<>();
+
+                                hh = Arrays.asList(colNames);
+
+
+
+                                for(int w=0; w < hh.size();w++){
+                                    String sel = hh.get(w);
+
+                                    if(!(Objects.equals(sel, "_id"))){
+
+                                        temp_hh.add(sel);
+                                    }
+                                }
+
+                                temp_colNames = new String[(temp_hh.size())];
+
+                                temp_colNames  = temp_hh.toArray(temp_colNames);
+
+                                int count = colmns.getColumnCount();
+
+                                valueof_Colms= new String[count];
+                                Log.d("COL_COUNT", String.valueOf(count));
+
+                                rando.clear();
+
+                                if  (colmns.moveToFirst())
+                                {
+                                    do
+                                    {
+                                        for (int i =1 ; i < count; i++)
+                                        {
+                                            //rando.add(colmns.getString(i));
+
+                                            rando.add(colmns.getString(colmns
+                                                    .getColumnIndex(colNames[i])));
+                                        }
+                                    }
+                                    while (colmns.moveToNext());
+                                }
+
+
+
+
+
+
+
+                                String[] genInfo_colNames = getGenTbl.getColumnNames();
+
+                                gentemp_hh = new ArrayList<>();
+
+                                genhh = Arrays.asList(genInfo_colNames);
+
+
+
+                                for(int w=0; w < genhh.size();w++){
+                                    String sel = genhh.get(w);
+
+                                    if(!(Objects.equals(sel, "_id"))){
+
+                                        gentemp_hh.add(sel);
+                                    }
+                                }
+
+                                temp_gencolNames = new String[(gentemp_hh.size())];
+
+                                temp_gencolNames  = gentemp_hh.toArray(temp_gencolNames);
+
+                                int gencount = getGenTbl.getColumnCount();
+
+                                valueof_Colms= new String[gencount];
+
+                                Log.d("COL_COUNT", String.valueOf(gencount));
+
+                                gen_rando.clear();
+
+                                if  (getGenTbl.moveToFirst())
+                                {
+                                    do
+                                    {
+                                        for (int i =1 ; i < gencount; i++)
+                                        {
+                                            //rando.add(colmns.getString(i));
+
+                                            gen_rando.add(getGenTbl.getString(getGenTbl
+                                                    .getColumnIndex(genInfo_colNames[i])));
+                                        }
+                                    }
+                                    while (getGenTbl.moveToNext());
+                                }
+
+
+
+
+                                //Log.d("C_RANDO", String.valueOf(rando.size()));
+
+
+                                String col = android.text.TextUtils.join("|", temp_colNames);
+                                Log.d("C_COLNAMES", col);
+                                String colVal = android.text.TextUtils.join("|", rando);
+                                Log.d("C_COLVALUES", colVal);
+
+                                Colvalues colvalues = new Colvalues(col,colVal);
+
+                                coluValue.add(colvalues);
+
+                                String gen_col = android.text.TextUtils.join("|", temp_gencolNames);
+                                Log.d("temp_gencolNames", gen_col);
+                                String gen_colVal = android.text.TextUtils.join("|", gen_rando);
+                                Log.d("gen_rando", gen_colVal);
+
+                                Colvalues gen_colvalues = new Colvalues(gen_col,gen_colVal);
+
+                                gen_coluValue.add(gen_colvalues);
+
+                                //createTable(DatabaseHelper.SECTION_ANSWERS, col, colVal);
+                            }
+                            Log.d("coluValue", String.valueOf(coluValue.size()));
+                            Log.d("gen_coluValue", String.valueOf(gen_coluValue.size()));
+
+                            UploadLst uploadLst = new UploadLst(coluValue);
+
+                            save_UploadList_To_Shared_Prefs (getApplicationContext(), uploadLst,"uploadList");
+
+                            UploadLst uploadLst2 = new UploadLst(gen_coluValue);
+
+                            save_UploadList_To_Shared_Prefs (getApplicationContext(), uploadLst2,"uploadList2");
+
+                            Intent intent = new Intent(QuestionPage.this, Assesso.class);
+                            startActivity(intent);
+                            finish();
+
                         }
-                        while (colmns.moveToNext());
-                    }
+                    };
 
-                    //Log.d("C_RANDO", String.valueOf(rando.size()));
+                    // If mPendingRunnable is not null, then add to the message queue
+                    mHandler.post(mPendingRunnable);
+
+                    break;
 
 
-                    String col = android.text.TextUtils.join("|", temp_colNames);
-                    Log.d("C_COLNAMES", col);
-                    String colVal = android.text.TextUtils.join("|", rando);
-                    Log.d("C_COLVALUES", colVal);
-
-                    Colvalues colvalues = new Colvalues(col,colVal);
-
-                    coluValue.add(colvalues);
-
-                    //createTable(DatabaseHelper.SECTION_ANSWERS, col, colVal);
-                }
-                Log.d("coluValue", String.valueOf(coluValue.size()));
-
-                UploadLst uploadLst = new UploadLst(coluValue);
-
-                save_UploadList_To_Shared_Prefs (getApplicationContext(), uploadLst);
-
-                Intent intent = new Intent(QuestionPage.this, Assesso.class);
-                startActivity(intent);
-                finish();
-                break;
+            }
         }
 
-
-    }
-
-    public void save_UploadList_To_Shared_Prefs(Context context,UploadLst dbList) {
+    public void save_UploadList_To_Shared_Prefs(Context context,UploadLst dbList,String listStringName) {
         SharedPreferences appSharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context.getApplicationContext());
         SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
         Gson gson = new Gson();
         String json = gson.toJson(dbList);
-        prefsEditor.putString("uploadList", json);
+        //prefsEditor.putString("uploadList", json);
+
+        prefsEditor.putString(listStringName, json);
         prefsEditor.apply();
 
     }

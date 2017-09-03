@@ -95,6 +95,16 @@ public class AppController extends Application {
         editor.apply();
     }
 
+    public void addStartTime(long time_stamp) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putLong(Constants.TIME_STAMP, time_stamp);
+        editor.apply();
+    }
+
+    public long getStartTime() {
+        return getSharedPreferences().getLong(Constants.TIME_STAMP, -1);
+    }
+
     //This method will check whether the user is logged in or not
    /* public boolean isLoggedIn() {
         return getSharedPreferences().getBoolean(Constants.IS_LOGGED_IN, false);

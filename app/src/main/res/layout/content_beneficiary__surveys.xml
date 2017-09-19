@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context=".ui.SelectSurvey"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp" >
+
+                <TextView
+                    android:id="@+id/textView0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="PLEASE SELECT A SURVEY "
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp" >
+
+                <Spinner
+                    android:textAlignment="center"
+                    android:id="@+id/spinnerSurveys"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </TableRow>
+
+
+            <Button
+                android:layout_marginTop="40dp"
+                android:onClick="proceedAssessment"
+                android:id="@+id/fetchquiz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Download the Selected Survey"/>
+
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40sp" >
+
+                <ImageView
+                    android:clickable="true"
+                    android:onClick="promptDialog"
+                    android:id="@+id/check_suvinDb"
+                    android:layout_width="0.0dip"
+                    android:layout_height="45sp"
+                    android:layout_marginRight="1sp"
+                    android:layout_weight="1.0"
+                    android:src="@drawable/forwardqq" />
+
+            </TableRow>
+
+
+
+        </TableLayout>
+
+
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

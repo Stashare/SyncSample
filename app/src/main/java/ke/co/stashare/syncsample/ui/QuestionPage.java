@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -63,6 +64,8 @@ import ke.co.stashare.syncsample.survey.helper.QueFragmentPagerAdapter;
 import ke.co.stashare.syncsample.survey.helper.Quiz;
 import ke.co.stashare.syncsample.survey.helper.RandList;
 import ke.co.stashare.syncsample.survey.helper.UploadLst;
+import ke.co.stashare.syncsample.ui.models.AddedSavedList;
+import ke.co.stashare.syncsample.ui.models.Quiza;
 
 /**
  * Created by Ken Wainaina on 19/08/2017.
@@ -80,7 +83,8 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
     private TextView toolbar_text;
     TextView subsection_text;
 
-    ArrayList<Quiz> sample;
+    //ArrayList<Quiz> sample;
+    ArrayList<Quiza> sample2;
     List<Colvalues> coluValue;
     List<Colvalues> gen_coluValue;
     List<String> rando;
@@ -100,6 +104,7 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
     String[] temp_colNames;
     String[] temp_gencolNames;
     List<String> aList_temp;
+    String survey_idno;
     String[] valueof_Colms;
     ProgressDialog progressDialog2;
     RelativeLayout saveBtn;
@@ -109,12 +114,24 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
     String[] startTimeDateCol;
     String[]startTimeDateValues;
 
+    String[] qsnList_temp2;
+    String[] ansList_temp2;
+    List<String> qList_temp2;
+    List<String> aList_temp2;
+
+
+
     List<String>listTimeDateCol;
     List<String> listTimeDateValues;
+
+    List<String>strtTimeDateCol;
+    List<String> strtTimeDateValues;
 
 
     ProgressDialog progressDialog;
     public static final String IMPORT_DB_CREATETABLE = "http://104.236.111.61/testApi/createTable.php";
+    private String assess_idno;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,19 +145,23 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
         }
 
 
+
         progressDialog2 = new ProgressDialog(this);
         progressDialog2.setMessage("Uploading Records to Database");
 
-
+        mHandler = new Handler();
 
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
 
 
         progressDialog = new ProgressDialog(this);
 
-        mHandler = new Handler();
 
-        sample = new ArrayList<>();
+        qList_temp2= new ArrayList<>();
+        aList_temp2= new ArrayList<>();
+
+        //sample = new ArrayList<>();
+        sample2 = new ArrayList<>();
         user_ids = new ArrayList<>();
         temp_hh = new ArrayList<>();
         gentemp_hh = new ArrayList<>();
@@ -164,20 +185,28 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
         savie = (Button) findViewById(R.id.save_data);
         saveBtn = (RelativeLayout)findViewById(R.id.saveBtn_lay);
 
-        loadQue(DatabaseHelper.QUE_TABLE,DatabaseHelper.QUE);
+        Intent getSuv_id = getIntent();
 
-        for (int i=0; i<sample.size(); i++){
+        survey_idno = getSuv_id.getStringExtra("idi");
 
-            Log.d("QP_LIST", String.valueOf(sample.get(i).getQue_type()));
+        assess_idno = getSuv_id.getStringExtra("assessID");
+
+        Log.d("survey_idno", String.valueOf(survey_idno));
+
+        loadQue(DatabaseHelper.QUE_TABLE,DatabaseHelper.QUE, survey_idno,assess_idno);
+
+        for (int i=0; i<sample2.size(); i++){
+
+            Log.d("QP_LIST", String.valueOf(sample2.get(i).getQuestion_name()));
 
         }
 
         mMyFragmentPagerAdapter = new QueFragmentPagerAdapter(
-                getSupportFragmentManager(), sample);
+                getSupportFragmentManager(), sample2);
 
         mViewPager.setAdapter(mMyFragmentPagerAdapter);
 
-        mViewPager.setOffscreenPageLimit(sample.size());
+        mViewPager.setOffscreenPageLimit(sample2.size());
 
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -190,9 +219,18 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
             public void onPageSelected(int position) {
                 Log.d("CURRENT", String.valueOf(position));
 
-                if (mViewPager.getCurrentItem() == (sample.size()-1)) {
+                if (mViewPager.getCurrentItem() == (sample2.size()-1)) {
                     next.setVisibility(View.INVISIBLE);
                     prev.setVisibility(View.VISIBLE);
+/*
+
+
+                    Fragment quePageFragment = new QuePageFragment();//Get Fragment Instance
+                    Bundle data = new Bundle();//Use bundle to pass data
+                    data.putString("data", "This is Argument Fragment");//put string, int, etc in bundle with a key value
+                    quePageFragment.setArguments(data);//Finally set argument bundle to fragment
+*/
+
                     saveBtn.setVisibility(View.VISIBLE);
 
                     /*new Handler().post(new Runnable() {
@@ -230,7 +268,7 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
             next.setVisibility(View.VISIBLE);
         }
 
-        if (mViewPager.getCurrentItem() == (sample.size()-2)) {
+        if (mViewPager.getCurrentItem() == (sample2.size()-2)) {
             next.setVisibility(View.INVISIBLE);
             prev.setVisibility(View.VISIBLE);
         }
@@ -243,7 +281,7 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
                     public void onClick(View view) {
 
                         prev.setVisibility(View.VISIBLE);
-                        if (mViewPager.getCurrentItem() == sample.size()-2) {
+                        if (mViewPager.getCurrentItem() == sample2.size()-2) {
                             next.setVisibility(View.INVISIBLE);
                         }
 
@@ -277,29 +315,37 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
     }
 
 
-    private void loadQue(String tbl,String order_col) {
+    private void loadQue(String tbl,String order_col,String survey_id,String assess_id) {
 
-        sample.clear();
-        Cursor cursor = db.getQue(tbl, order_col);
+        sample2.clear();
+        Cursor cursor = db.getQue2(tbl, order_col,survey_id,assess_id);
+        int counti =cursor.getCount();
+
+        Log.d("counti", String.valueOf(counti));
         if (cursor.moveToFirst()) {
             do {
-                Quiz quiz = new Quiz(
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("que"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("que_no"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("is_subquestion"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("que_type"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("singleresponse_text"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("selections"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("section"))),
+                Quiza quiz = new Quiza(
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("survey_id"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("question_id"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("question_name"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("question_description"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("answer_type"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("sub_question_status"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("section_name"))),
                         cursor.getString(cursor.getColumnIndex(String.valueOf("sub_section"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("column_name"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("parent_question_id"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("selections"))),
 
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("sub_que"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("single_resp_text"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("subque_type"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("subque_no"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("subque_selections")))
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("assessment_id"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("assessment_name"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("country_status"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("display_status"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("submitted_date"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("project_id")))
+
                 );
-                sample.add(quiz);
+                sample2.add(quiz);
             } while (cursor.moveToNext());
         }
 
@@ -370,6 +416,35 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
                             qList_temp.add(0,"user_id");
                             aList_temp.add(0,r_id);
 
+                            AddedSavedList aSl = get_AddedList_From_Shared_Prefs(QuestionPage.this);
+
+                            aList_temp2.clear();
+
+                            aList_temp2 = aSl.getResults();
+
+                                qList_temp2.add("project_id");
+                                qList_temp2.add("survey_id");
+                                qList_temp2.add("assessment_id");
+                                qList_temp2.add("country_status");
+                                qList_temp2.add("display_status");
+                                qList_temp2.add("submitted_date");
+
+
+                            qList_temp2.add(0,"user_id");
+                            aList_temp2.add(0,r_id);
+
+                            qsnList_temp2 = new String[qList_temp2.size()];
+                            ansList_temp2 = new String[aList_temp2.size()];
+
+                            qsnList_temp2  = qList_temp2.toArray(qsnList_temp2);
+                            ansList_temp2 = aList_temp2.toArray(ansList_temp2);
+
+                            Log.d("QSNS2", Arrays.toString(qsnList_temp2));
+
+                            Log.d("ANSW2", Arrays.toString(ansList_temp2));
+
+
+                            Cursor c2 = db.createUsersTable("section_answers",qsnList_temp2,ansList_temp2);
 
 
                             listTimeDateCol.add("user_id");
@@ -593,7 +668,16 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
 
                             save_UploadList_To_Shared_Prefs (getApplicationContext(), uploadLst2,"uploadList2");
 
+
+                            Intent getSuv_id = getIntent();
+
+                            survey_idno = getSuv_id.getStringExtra("idi");
+                            assess_idno = getSuv_id.getStringExtra("assessID");
+
                             Intent intent = new Intent(QuestionPage.this, Assesso.class);
+
+                            intent.putExtra("idi",survey_idno);
+                            intent.putExtra("assessID",assess_idno);
                             startActivity(intent);
                             finish();
 
@@ -622,6 +706,26 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
 
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public AddedSavedList get_AddedList_From_Shared_Prefs(Context context) {
+
+        List<String> results = new ArrayList<>();
+
+        SharedPreferences appSharedPrefs = PreferenceManager
+                .getDefaultSharedPreferences(context.getApplicationContext());
+        Gson gson = new Gson();
+        String json = appSharedPrefs.getString("addedList", "");
+
+        AddedSavedList dbList= new AddedSavedList(results);
+
+        if(!Objects.equals(json, "")){
+
+            dbList = gson.fromJson(json, AddedSavedList.class);
+        }
+
+        return dbList;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public  DbList get_DbList_From_Shared_Prefs(Context context) {
@@ -675,36 +779,51 @@ public class QuestionPage  extends AppCompatActivity implements View.OnClickList
         return dbList;
     }
 
-    private void createTable(final String tbl, final String col, final String colVal) {
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createTimeStamp(){
+        String user_id = AppController.getInstance().getGenRandom();
 
-        progressDialog2.show();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, IMPORT_DB_CREATETABLE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-
-                        progressDialog2.hide();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("questions", col);
-                params.put("answers", colVal);
-                params.put("table_name", tbl);
-                return params;
-            }
-        };
-        AppController.getInstance().addToRequestQueue(stringRequest);
+        DateFormat assessCalendar = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
+        DateFormat assessTime = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
+        //DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.ENGLISH);
+        String date = assessCalendar.format(Calendar.getInstance().getTime());
+        String startTime = assessTime.format(Calendar.getInstance().getTime());
 
 
+        try {
+            Date date_start = assessTime.parse(startTime);
+
+            Log.d("Parsed date", "date: "+ date_start.getTime());
+
+            AppController.getInstance().addStartTime(date_start.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        //int s = Integer.parseInt(startTime);
+
+
+
+
+        strtTimeDateCol.add("user_id");
+        strtTimeDateCol.add("Assessment_start_time");
+        strtTimeDateCol.add("Assessment_date");
+
+        strtTimeDateValues.add(user_id);
+        strtTimeDateValues.add(startTime);
+        strtTimeDateValues.add(date);
+
+
+        startTimeDateCol = new String[strtTimeDateCol.size()];
+
+        startTimeDateValues = new String[strtTimeDateValues.size()];
+
+        startTimeDateCol = strtTimeDateCol.toArray(startTimeDateCol);
+
+        startTimeDateValues=  strtTimeDateValues.toArray(startTimeDateValues);
+
+        db.createGenInfoTable(DatabaseHelper.GENERALINFO_TABLE, startTimeDateCol,startTimeDateValues);
 
     }
 

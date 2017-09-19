@@ -6,6 +6,7 @@
         <item>Education Section</item>
         <item>Employment Section</item>
     </string-array>
+    <string name="site">Copyright (&#169;) IslamicRelief 2017</string>
     <string name="collapsed">collapsed: %s</string>
     <string name="expanded">expanded: %s</string>
     <string name="sex">A.1  Sex of respondent (Select one) :</string>

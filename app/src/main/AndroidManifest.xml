@@ -21,7 +21,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".gps.UseGps"
+        <activity android:name=".ui.Dashboard"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,11 +29,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".gps.UseGps"/>
+
+        <activity android:name=".ui.SelectSurvey"
+
+            android:parentActivityName=".ui.Dashboard">
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".ui.Dashboard" />
+            </activity>
+
+        <activity android:name=".navigator.MainActivity"/>
         <activity android:name=".gps.GpsActivity"/>
         <activity android:name=".ui.IngineTest"/>
         <activity android:name=".gps.SwitchGpsAuto"/>
         <activity android:name=".gps.MainActivity"/>
-        <activity android:name=".navigator.MainActivity"/>
         <activity android:name=".ui.QuestionPage"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".ui.StartSurvey"/>
@@ -44,6 +56,7 @@
         <activity android:name=".ui.TestUi"/>
         <activity android:name=".bignerd.SlideSec"/>
         <activity android:name=".ui.DynamicUi"/>
+        <activity android:name=".ui.SelectAssessment"/>
         <activity android:name=".survey.Test"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".bignerd.SurveySections"/>

@@ -10,6 +10,7 @@ import java.util.List;
 import ke.co.stashare.syncsample.navigator.Contact;
 import ke.co.stashare.syncsample.navigator.PageFragment;
 import ke.co.stashare.syncsample.ui.QuePageFragment;
+import ke.co.stashare.syncsample.ui.models.Quiza;
 
 /**
  * Created by Ken Wainaina on 12/08/2017.
@@ -17,9 +18,9 @@ import ke.co.stashare.syncsample.ui.QuePageFragment;
 
 public class QueFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    ArrayList<Quiz> ques;
+    ArrayList<Quiza> ques;
 
-    public QueFragmentPagerAdapter(FragmentManager fm, ArrayList<Quiz> queList) {
+    public QueFragmentPagerAdapter(FragmentManager fm, ArrayList<Quiza> queList) {
         super(fm);
         this.ques = queList;
     }

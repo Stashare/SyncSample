@@ -31,7 +31,6 @@
                 android:textColor="@android:color/background_light"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
                 android:textStyle="bold"
-                android:textSize="17sp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
@@ -54,6 +53,7 @@
 
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/sub_section"
             android:layout_width="match_parent"
             android:layout_height="56dp"
@@ -131,6 +131,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="5dp"
             android:id="@+id/subque_lay"
             android:visibility="gone"
             android:layout_below="@id/que_lay"
@@ -139,17 +143,18 @@
             android:layout_height="wrap_content">
 
         <TextView
-            android:textAlignment="textStart"
+            android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
+            android:fontFamily="sans-serif-condensed"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
             android:gravity="start"
-            android:textStyle="bold"
-            android:textSize="17sp"
             android:id="@+id/subque"
-            android:textColor="@android:color/background_dark"
+            android:textColor="@android:color/holo_red_light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Indicate the number of people in the household living / eating at home daily:"
-            android:layout_marginLeft="5dp" />
+            android:text="RELATED QUESTIONS" />
 
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="7dp"
@@ -158,7 +163,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:scrollbars="vertical" />
-
 
         </LinearLayout>
     </RelativeLayout>

@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -42,7 +44,7 @@ import ke.co.stashare.syncsample.survey.helper.Quiz;
 
 public class StartAssessment  extends AppCompatActivity implements View.OnClickListener {
 
-    GeneralInfoAdapter generalInfoAdapter;
+ /*   GeneralInfoAdapter generalInfoAdapter;
     RecyclerView recyclerView;
     //database helper object
     private DatabaseHelper db;
@@ -56,26 +58,29 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
     List<String> strtTimeDateValues;
 
     String[]hints;
-    Button proceed;
+    ImageView proceed;
     List<GenQuiz> sampleAns;
     List<GenQuiz> sample;
     String[] headers;
+    String survey_idno;
+    TextView toobarTEXT;
     private Handler mHandler;
     private Toolbar mToolbar;
-
+*/
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_respodent);
 
-        sample = new ArrayList<>();
+       /* sample = new ArrayList<>();
         sampleAns = new ArrayList<>();
         adapterList = new ArrayList<>();
         strtTimeDateCol =new ArrayList<>();
         strtTimeDateValues = new ArrayList<>();
 
         db = new DatabaseHelper(this);
-        proceed = (Button) findViewById(R.id.proceed);
+        toobarTEXT = (TextView)findViewById(R.id.toolbar_text);
+        proceed = (ImageView) findViewById(R.id.proceed);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -85,12 +90,16 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
         assert actionBar != null;
         actionBar.setDisplayShowTitleEnabled(false);
 
+        toobarTEXT.setText("GENERAL INFORMATION");
+        Intent getSuv_id = getIntent();
+
+        survey_idno = getSuv_id.getStringExtra("idi");
+
         Runnable mPendingRunnable = new Runnable() {
             @Override
             public void run() {
 
-                loadGenQue(DatabaseHelper.GENERALINFO_TABLE,DatabaseHelper.QUE);
-
+                loadGenQue(DatabaseHelper.GENERALINFO_TABLE,DatabaseHelper.QUE,survey_idno);
 
                 String[] mDataSet = new String[sample.size()];
 
@@ -139,11 +148,16 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
 
         recyclerView.setLayoutManager(llm);
 
-
+*/
 
     }
 
-    private int random_num() {
+    @Override
+    public void onClick(View v) {
+
+    }
+
+   /* private int random_num() {
         long timeSeed = System.nanoTime(); // to get the current date time value
 
         double randSeed = Math.random() * 1000; // random number generation
@@ -169,16 +183,17 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
     }
 
 
-    private void loadGenQue(String tbl, String order_col) {
+    private void loadGenQue(String tbl, String order_col,String suv_id) {
+
 
         sample.clear();
-        Cursor cursor = db.getAnyQue(tbl, order_col);
+        Cursor cursor = db.getQue2(tbl, order_col,suv_id);
         if (cursor.moveToFirst()) {
             do {
                 GenQuiz genQuiz = new GenQuiz(
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("que"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("que_title"))),
-                        cursor.getString(cursor.getColumnIndex(String.valueOf("hint")))
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("question_name"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("column_name"))),
+                        cursor.getString(cursor.getColumnIndex(String.valueOf("question_description")))
                 );
                 sample.add(genQuiz);
             } while (cursor.moveToNext());
@@ -194,6 +209,53 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
 
         Log.d("GEN_ANS_COUNT", String.valueOf(count));
     }
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public void createTimeStamp(){
+        String user_id = AppController.getInstance().getGenRandom();
+
+        DateFormat assessCalendar = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
+        DateFormat assessTime = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
+        //DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.ENGLISH);
+        String date = assessCalendar.format(Calendar.getInstance().getTime());
+        String startTime = assessTime.format(Calendar.getInstance().getTime());
+
+
+        try {
+            Date date_start = assessTime.parse(startTime);
+
+            Log.d("Parsed date", "date: "+ date_start.getTime());
+
+            AppController.getInstance().addStartTime(date_start.getTime());
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        //int s = Integer.parseInt(startTime);
+
+
+
+
+        strtTimeDateCol.add("user_id");
+        strtTimeDateCol.add("Assessment_start_time");
+        strtTimeDateCol.add("Assessment_date");
+
+        strtTimeDateValues.add(user_id);
+        strtTimeDateValues.add(startTime);
+        strtTimeDateValues.add(date);
+
+
+        startTimeDateCol = new String[strtTimeDateCol.size()];
+
+        startTimeDateValues = new String[strtTimeDateValues.size()];
+
+        startTimeDateCol = strtTimeDateCol.toArray(startTimeDateCol);
+
+        startTimeDateValues=  strtTimeDateValues.toArray(startTimeDateValues);
+
+        db.createGenInfoTable("geninfo_answers", startTimeDateCol,startTimeDateValues);
+
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -203,49 +265,11 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
             case R.id.proceed:
                 //loadGenQueAns("geninfo_answers",DatabaseHelper.QUE);
 
-                String user_id = AppController.getInstance().getGenRandom();
 
-                DateFormat assessCalendar = new SimpleDateFormat("yyyy.MM.dd", Locale.ENGLISH);
-                DateFormat assessTime = new SimpleDateFormat("h:mm a", Locale.ENGLISH);
-                //DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm", Locale.ENGLISH);
-                String date = assessCalendar.format(Calendar.getInstance().getTime());
-                String startTime = assessTime.format(Calendar.getInstance().getTime());
+                Intent getSuv_id = getIntent();
 
+                survey_idno = getSuv_id.getStringExtra("idi");
 
-                try {
-                    Date date_start = assessTime.parse(startTime);
-
-                    Log.d("Parsed date", "date: "+ date_start.getTime());
-
-                    AppController.getInstance().addStartTime(date_start.getTime());
-
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                //int s = Integer.parseInt(startTime);
-
-
-
-
-                strtTimeDateCol.add("user_id");
-                strtTimeDateCol.add("Assessment_start_time");
-                strtTimeDateCol.add("Assessment_date");
-
-                strtTimeDateValues.add(user_id);
-                strtTimeDateValues.add(startTime);
-                strtTimeDateValues.add(date);
-
-
-                startTimeDateCol = new String[strtTimeDateCol.size()];
-
-                startTimeDateValues = new String[strtTimeDateValues.size()];
-
-                startTimeDateCol = strtTimeDateCol.toArray(startTimeDateCol);
-
-                startTimeDateValues=  strtTimeDateValues.toArray(startTimeDateValues);
-
-                db.createGenInfoTable("geninfo_answers", startTimeDateCol,startTimeDateValues);
 
 
                 //Time of Assessment (Start),Time of Assessment (Finish),Time of Assessment (Total)-in minutes.
@@ -253,9 +277,10 @@ public class StartAssessment  extends AppCompatActivity implements View.OnClickL
                 //GET ASSESSMENT START TIME,ASSESSMENT CALENDAR IN  (DD/MM/YYYY) ,STORE IT KWA DB
                 //CHECK WHETHER THE CURRENT GENINFO HAS THE COLUMNS GIVEN,KA HAINA CREATE AND FEED IT NA DATA
                 Intent intent = new Intent(StartAssessment.this, QuestionPage.class);
+                intent.putExtra("idi",survey_idno);
                 startActivity(intent);
                 finish();
                 break;
         }
-    }
+    }*/
 }

@@ -28,16 +28,17 @@
             <TextView
                 android:id="@+id/toolbar_text"
                 android:textColor="@android:color/background_light"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center"
+                android:gravity="start"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
                 android:layout_marginEnd="10dp"
                 android:layout_marginRight="10dp"
+                android:textSize="19sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:layout_gravity="center_vertical|start"
-                android:text="Fill in the Required Details Below:"/>
+                android:textStyle="bold"
+                android:text="GENERAL INFORMATION"/>
 
         </android.support.v7.widget.Toolbar>
 
@@ -53,13 +54,25 @@
         android:layout_marginBottom="10dp"
         android:paddingBottom="@dimen/md_keylines"
         android:scrollbars="vertical" />
-    <Button
-        android:layout_marginTop="10dp"
+
+    <RelativeLayout
+        android:layout_marginTop="30dp"
         app:layout_anchor="@+id/my_recycler_view"
         app:layout_anchorGravity="bottom|center"
-        android:id="@+id/proceed"
-        android:theme="@style/Button2"
-        android:text="Proceed to Questions"
+        android:id="@+id/back_next"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:clickable="true"
+            android:layout_marginEnd="25dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/proceed"
+            android:layout_width="65dp"
+            android:layout_marginTop="55dp"
+            android:layout_height="65dp"
+            android:src="@drawable/ic_arrow_next"
+            android:layout_marginRight="20dp" />
+
+    </RelativeLayout>
     </android.support.design.widget.CoordinatorLayout>

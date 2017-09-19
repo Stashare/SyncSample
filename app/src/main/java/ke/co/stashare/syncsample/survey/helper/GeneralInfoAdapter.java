@@ -172,45 +172,6 @@ public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter
 
 
 
-/*
-            Answers ansi = new Answers(question_no, majibu);
-
-            ans.add(ansi);
-
-
-            DbList dbL = get_DbList_From_Shared_Prefs(context);
-
-            temp_ans.clear();
-
-            temp_ans = dbL.getResults();
-
-            if (temp_ans.size() == 0) {
-
-                DbList dbList = new DbList(ans);
-
-                save_DbList_To_Shared_Prefs(context, dbList);
-            } else {
-
-                for (Iterator<Answers> iterator = temp_ans.iterator(); iterator.hasNext(); ) {
-                    Answers value = iterator.next();
-                    if (Objects.equals(value.getQue(), question_no)) {
-                        iterator.remove();
-                    }
-                }
-
-                temp_ans.add(ansi);
-
-                Log.d("temp_ans", String.valueOf(temp_ans.size()));
-
-
-                DbList dbList = new DbList(temp_ans);
-
-                save_DbList_To_Shared_Prefs(context, dbList);
-
-            }
-*/
-
-
             ansWithComma.clear();
 
         }
@@ -222,35 +183,4 @@ public class GeneralInfoAdapter  extends RecyclerView.Adapter<GeneralInfoAdapter
     }
 
 
-    public void save_DbList_To_Shared_Prefs(Context context, DbList dbList) {
-        SharedPreferences appSharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context.getApplicationContext());
-        SharedPreferences.Editor prefsEditor = appSharedPrefs.edit();
-        Gson gson = new Gson();
-        String json = gson.toJson(dbList);
-        prefsEditor.putString("dblist", json);
-        prefsEditor.apply();
-
-    }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public DbList get_DbList_From_Shared_Prefs(Context context) {
-
-        List<Answers> results = new ArrayList<>();
-
-        SharedPreferences appSharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(context.getApplicationContext());
-        Gson gson = new Gson();
-        String json = appSharedPrefs.getString("dblist", "");
-
-        DbList dbList = new DbList(results);
-
-        if (!Objects.equals(json, "")) {
-
-            dbList = gson.fromJson(json, DbList.class);
-        }
-
-        return dbList;
-    }
 }

@@ -60,6 +60,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public Cursor getQue2(String tbl,String order_col,String survey_id,String asseso_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //String sq= "SELECT EMP_ID, NAME, DEPT FROM COMPANY LEFT OUTER JOIN DEPARTMENT ON COMPANY.ID = DEPARTMENT.EMP_ID";
+
+
+       /* Cursor cursor = db.rawQuery("select "+ USERID + " from "+ tbl + " where  "+ USERID + " = '"
+                + user_id + "'", null);*/
+
+        String sqt= "SELECT * FROM " + tbl + " where survey_id = '" + survey_id + "' AND assessment_id = '" + asseso_id + "';";
+        //String sql = "SELECT * FROM " + tbl + " ORDER BY " + order_col + " ASC;";
+        Cursor c = db.rawQuery(sqt, null);
+        return c;
+    }
+
+    public Cursor getAssessments(String tbl,String order_col,String survey_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //String sq= "SELECT EMP_ID, NAME, DEPT FROM COMPANY LEFT OUTER JOIN DEPARTMENT ON COMPANY.ID = DEPARTMENT.EMP_ID";
+
+
+       /* Cursor cursor = db.rawQuery("select "+ USERID + " from "+ tbl + " where  "+ USERID + " = '"
+                + user_id + "'", null);*/
+
+        String sqt= "SELECT * FROM " + tbl + " where survey_id = '"
+                + survey_id + "';";
+        //String sql = "SELECT * FROM " + tbl + " ORDER BY " + order_col + " ASC;";
+        Cursor c = db.rawQuery(sqt, null);
+        return c;
+    }
+
+
+    public Cursor getQue3(String tbl,String order_col,String parentque_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //String sq= "SELECT EMP_ID, NAME, DEPT FROM COMPANY LEFT OUTER JOIN DEPARTMENT ON COMPANY.ID = DEPARTMENT.EMP_ID";
+
+
+       /* Cursor cursor = db.rawQuery("select "+ USERID + " from "+ tbl + " where  "+ USERID + " = '"
+                + user_id + "'", null);*/
+
+        String sqt= "SELECT * FROM " + tbl + " where parent_question_id = '"
+                + parentque_id + "';";
+        //String sql = "SELECT * FROM " + tbl + " ORDER BY " + order_col + " ASC;";
+        Cursor c = db.rawQuery(sqt, null);
+        return c;
+    }
+
     public Cursor getQue(String tbl,String order_col) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -152,7 +200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 }
 
-                db.update(tbl,cv,"random_id ="+user_id, null);
+                db.update(tbl,cv,"user_id ="+user_id, null);
                 db.close();
 
             }
@@ -400,15 +448,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (tblExists.getCount() > 0) {
 
 
-            //query the ids of the tables, compare if the id with one supplied
+         /*   //query the ids of the tables, compare if the id with one supplied
             String q_id = answers.get(0);
 
             String col_ID = columns.get(0);
 
             Cursor c = db.rawQuery("select " + col_ID + " from " + tbl_name + " where " + col_ID + " = '"
+                    + q_id + "'", null);*/
+
+            String q_id = answers.get(1);
+
+            String col_ID = columns.get(1);
+
+            Cursor c = db.rawQuery("select " + col_ID + " from " + tbl_name + " where " + col_ID + " = '"
                     + q_id + "'", null);
 
-            if (c.getCount() == 0) {
+            for (int i = 0; i < answers.size(); i++) {
+
+                String outp= columns.get(i)+", "+answers.get(i);
+
+                Log.d("ROW, VALUE", String.valueOf(outp));
+
+                cv.put(columns.get(i), answers.get(i));
+
+            }
+            db.insert(tbl_name, null, cv);
+
+            db.close();
+
+
+           /* if (c.getCount() == 0) {
                 for (int i = 0; i < answers.size(); i++) {
 
                     String outp= columns.get(i)+", "+answers.get(i);
@@ -424,7 +493,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-            }
+            }*/
         }
         else {
 
@@ -471,7 +540,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db = this.getReadableDatabase();
 
 
-        Cursor cursor = db.rawQuery("select "+ RANDOMID + " from "+ tbl + " where  "+ RANDOMID + " = '"
+        Cursor cursor = db.rawQuery("select "+ USERID + " from "+ tbl + " where  "+ USERID + " = '"
                 + user_id + "'", null);
 
         return cursor;

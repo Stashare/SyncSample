@@ -151,8 +151,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 String col = obj.getString("COLUMN_NAME");
 
-                                genquestions_col.add(col);
+                                //genquestions_col.add(col);
                             }
+                            genquestions_col.add("survey_id"); genquestions_col.add("question_id"); genquestions_col.add("question_name");
+                            genquestions_col.add("answer_type"); genquestions_col.add("column_name"); genquestions_col.add("description");
+                            genquestions_col.add("column_name");
 
                             sourceGenQuestions();
 
@@ -187,8 +190,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 String col = obj.getString("COLUMN_NAME");
 
-                                questions_col.add(col);
+                                //questions_col.add(col);
                             }
+                            questions_col.add("que_no");questions_col.add("question_name");questions_col.add("answer_type");
+                            questions_col.add("sub_question_status"); questions_col.add("section_name"); questions_col.add("sub_section");
+                            questions_col.add("column_name");
 
                             //now that i have the columns, source the questions and create a table
                             sourceQuestions();
@@ -217,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         AppController.getInstance().addToRequestQueue(stringRequest2);
 
-        StringRequest stringRequest3 = new StringRequest(Request.Method.GET, IMPORT_DB_SUBQCOL,
+       /* StringRequest stringRequest3 = new StringRequest(Request.Method.GET, IMPORT_DB_SUBQCOL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -239,11 +245,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             //now that i have the columns, source the sub_questions and create a table
 
                             sourceSubQuestions();
-                            /*Col col = new Col(subquestion_col);
+                            *//*Col col = new Col(subquestion_col);
 
                             save_Subque_Columns_To_Shared_Prefs(getApplicationContext(), col);
 
-*/
+*//*
 
 
                         } catch (JSONException e) {
@@ -259,9 +265,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
 
         AppController.getInstance().addToRequestQueue(stringRequest3);
-
+*/
         Log.d("COL_QUE", String.valueOf(questions_col));
-        Log.d("COL_SUBQUE", String.valueOf(subquestion_col));
+        //Log.d("COL_SUBQUE", String.valueOf(subquestion_col));
 
     }
 
